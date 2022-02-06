@@ -2,12 +2,14 @@ package ocl1_proyecto1;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.util.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -162,12 +164,21 @@ public class Ventana extends JFrame{
                 AnalizadorLexico lexico = new AnalizadorLexico(new BufferedReader(new StringReader(entrada.getText())));
                 parser sintactico = new parser(lexico);
                 try {
-                    sintactico.debug_parse();
+                    sintactico.parse();
+                    for(int i = 0; i< sintactico.action_obj.listaConjuntos.size(); i++){
+                        List atConjunto = (ArrayList) sintactico.action_obj.listaConjuntos.get(i);
+                        System.out.println(atConjunto.get(0));
+                    }
+                    for(int i = 0; i< lexico.errores.size(); i++){
+                        System.out.println(lexico.errores.get(i));
+                    }
+                    for(int i = 0; i< sintactico.errores.size(); i++){
+                        System.out.println(sintactico.errores.get(i));
+                    }
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
             }
-        
         });
     }
     

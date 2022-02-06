@@ -5,7 +5,7 @@ import java.util.*;
 %%
 
 %{
-    public List tokens = new ArrayList();
+    List errores = new ArrayList();
     String cadena = "";
 %}
 
@@ -55,15 +55,15 @@ SALTO = [\ \n]
 <YYINITIAL> \/\/ { yybegin(COUNI);}
 <YYINITIAL> \<\! { yybegin(COMULTI);}
 <YYINITIAL> {ESPACIO} { }
-<YYINITIAL> {SALTO} { System.out.println("salto"); }
-<YYINITIAL> . {}
+<YYINITIAL> {SALTO} { }
+<YYINITIAL> . {errores.add("Caracter: "+yytext()+" en la linea: "+(yyline+1)+" columna: "+(yycolumn+1));}
 
 <LEX>{
     \\\" { cadena+=yytext();}
     \\n { cadena+=yytext();}
     \\\' { cadena+=yytext();}
     \" { String tmp=cadena+"\""; cadena=""; yybegin(YYINITIAL); return new Symbol(sym.FRASE, yychar, yyline, tmp);}
-    [\n] { String tmp=cadena; cadena=""; yybegin (YYINITIAL);}
+    [\n] { String tmp=cadena; cadena=""; errores.add("Cadena: "+tmp+" en la linea: "+(yyline+1)+" columna: "+(yychar+1)); yybegin (YYINITIAL);}
     [^\"] { cadena+=yytext(); }
 }
 
