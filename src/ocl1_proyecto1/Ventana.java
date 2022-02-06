@@ -4,9 +4,13 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.StringReader;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -151,6 +155,20 @@ public class Ventana extends JFrame{
         JButton analizar = new JButton("Analizar Entradas");
         analizar.setBounds(230, 350, 150, 20);
         this.panel.add(analizar);
+        
+        analizar.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                AnalizadorLexico lexico = new AnalizadorLexico(new BufferedReader(new StringReader(entrada.getText())));
+                parser sintactico = new parser(lexico);
+                try {
+                    sintactico.debug_parse();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        
+        });
     }
     
     private void generarDirectorios(){
