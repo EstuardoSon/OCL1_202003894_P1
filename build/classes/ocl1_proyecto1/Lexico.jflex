@@ -50,7 +50,7 @@ SALTO = [\ \n]
 <YYINITIAL> {IDENTIFICADOR} { return new Symbol(sym.IDENTIFICADOR, yyline, yycolumn, yytext());}
 <YYINITIAL> {CONJUNTO} { return new Symbol(sym.CONJUNTO, yyline, yycolumn, yytext());}
 <YYINITIAL> {EXPRESION} { return new Symbol(sym.EXPRESION, yyline, yycolumn, yytext());}
-<YYINITIAL> \" { yybegin(LEX); cadena += "\"";}
+<YYINITIAL> \" { yybegin(LEX); }
 <YYINITIAL> \/\/ { yybegin(COUNI);}
 <YYINITIAL> \<\! { yybegin(COMULTI);}
 <YYINITIAL> {ESPACIO} { }
@@ -61,7 +61,7 @@ SALTO = [\ \n]
     \\\" { cadena+=yytext();}
     \\n { cadena+=yytext();}
     \\\' { cadena+=yytext();}
-    \" { String tmp=cadena+"\""; cadena=""; yybegin(YYINITIAL); return new Symbol(sym.FRASE, yychar, yyline, tmp);}
+    \" { String tmp=cadena; cadena=""; yybegin(YYINITIAL); return new Symbol(sym.FRASE, yychar, yyline, tmp);}
     [\n] { String tmp=cadena; cadena=""; errores.add(new ArrayList(){{add("Cadena: "+tmp+"");add(yyline+1);add(yychar+1);}}); yybegin (YYINITIAL);}
     [^\"] { cadena+=yytext(); }
 }

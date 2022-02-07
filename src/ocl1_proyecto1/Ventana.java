@@ -28,6 +28,8 @@ public class Ventana extends JFrame{
     private JTextArea salida = new JTextArea();
     private String nombreArchivo = "", direccionArchivo = "";
     
+    private List listaConjuntos, listaExpresiones, ListaVerificaciones;
+    
     public Ventana(){
         this.generarDirectorios();
         
@@ -228,9 +230,22 @@ public class Ventana extends JFrame{
                 parser sintactico = new parser(lexico);
                 try {
                     sintactico.parse();
+                    listaConjuntos = sintactico.action_obj.listaConjuntos;
                     for(int i = 0; i< sintactico.action_obj.listaConjuntos.size(); i++){
                         List atConjunto = (ArrayList) sintactico.action_obj.listaConjuntos.get(i);
-                        //System.out.println(atConjunto.get(0));
+                        System.out.println(atConjunto.get(0)+" "+atConjunto.get(1));
+                    }
+                    
+                    listaExpresiones = sintactico.action_obj.listaExpresiones;
+                    for(int i = 0; i< sintactico.action_obj.listaExpresiones.size(); i++){
+                        List atConjunto = (ArrayList) sintactico.action_obj.listaExpresiones.get(i);
+                        System.out.println(atConjunto.get(0)+" "+atConjunto.get(1));
+                    }
+                    
+                    listaExpresiones = sintactico.action_obj.listaVerificaciones;
+                    for(int i = 0; i< sintactico.action_obj.listaVerificaciones.size(); i++){
+                        List atConjunto = (ArrayList) sintactico.action_obj.listaVerificaciones.get(i);
+                        System.out.println(atConjunto.get(0)+" "+atConjunto.get(1));
                     }
                     
                     FileWriter archivo = new FileWriter(directorioActual+"/Reportes_202003894/Errores_202003894/"+nombreArchivo+".html"); 
