@@ -1,0 +1,96 @@
+package ocl1_proyecto1;
+
+import java_cup.runtime.Symbol;
+import java.util.List;
+import java.util.ArrayList;
+
+action code
+{:
+    String instruccion="", segVerificar="";
+    List listaConjuntos = new ArrayList();
+    List listaExpresiones = new ArrayList();
+    List listaVerificaciones = new ArrayList();
+:}
+
+parser code
+{:
+    List errores = new ArrayList();
+
+    public void syntax_error(Symbol s){
+       errores.add(new ArrayList(){{add("Error Recuperable "+s.value+" , se esperaba otro token");add(s.left+1);add(s.right+1);}});
+    }
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception{
+       errores.add(new ArrayList(){{add("Error NO Recuperable "+s.value+" , se esperaba otro token");add(s.left+1);add(s.right+1);}});
+    }
+:}
+
+terminal String IDENTIFICADOR,CONJUNTO,EXPRESION,FRASE,CONJ,SEPARADOR;
+terminal LLAVE_APERTURA,LLAVE_CIERRE,DOS_PTS,PT_COMA,ASIGNACION;
+
+nonterminal String CONJUNTOS,EXPRESIONES,VERIFICACIONES,SEPARADORES;
+nonterminal INICIO;
+
+
+start with INICIO;
+
+INICIO::= LLAVE_APERTURA CONJUNTOS EXPRESIONES SEPARADORES:sep VERIFICACIONES LLAVE_CIERRE
+    {:  
+        if(!sep.equals("%%")){
+            System.out.println("Exceso de separadores");
+        }
+        System.out.println("{\n"+instruccion+"%%\n"+segVerificar+"}");
+    :}
+;
+
+SEPARADORES::= SEPARADOR:sep SEPARADORES:seps
+    {:
+        RESULT = sep+seps;
+    :}
+    | SEPARADOR:sep
+    {:
+        RESULT = sep;
+    :}
+;
+
+CONJUNTOS::= CONJ:conj DOS_PTS IDENTIFICADOR:id ASIGNACION CONJUNTO:co PT_COMA
+    {:
+        instruccion += conj+": "+id+" -> "+co+";\n";
+        listaConjuntos.add(new ArrayList(){{add(id);add(co);}});
+    :}  
+    | CONJUNTOS:sigcon CONJ:conj DOS_PTS IDENTIFICADOR:id ASIGNACION CONJUNTO:co PT_COMA 
+    {:
+        instruccion += conj+": "+id+" -> "+co+";\n";
+        listaConjuntos.add(new ArrayList(){{add(id);add(co);}});
+    :} 
+    | error PT_COMA
+;
+
+
+EXPRESIONES::= IDENTIFICADOR:id ASIGNACION EXPRESION:ex PT_COMA
+    {:
+        instruccion += id+" -> "+ex+";\n";
+        listaExpresiones.add(new ArrayList(){{add(id);add(ex);}});
+    :} 
+    |EXPRESIONES:sigexp IDENTIFICADOR:id ASIGNACION EXPRESION:ex PT_COMA 
+    {:
+        instruccion += id+" -> "+ex+";\n";
+        listaExpresiones.add(new ArrayList(){{add(id);add(ex);}});
+    :}
+    | error PT_COMA
+    | error SEPARADOR
+;
+
+
+VERIFICACIONES::= IDENTIFICADOR:id DOS_PTS FRASE:fra PT_COMA
+    {:
+        segVerificar += id+" : \""+fra+"\";\n";
+        listaVerificaciones.add(new ArrayList(){{add(id);add(fra);}});
+    :}  
+    |VERIFICACIONES:sigver IDENTIFICADOR:id DOS_PTS FRASE:fra PT_COMA 
+    {:
+        segVerificar += id+" : \""+fra+"\";\n";
+        listaVerificaciones.add(new ArrayList(){{add(id);add(fra);}});
+    :}
+    | error PT_COMA
+    | error SEPARADOR
+;
