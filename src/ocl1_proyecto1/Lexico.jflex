@@ -17,7 +17,6 @@ import java.util.*;
 %column
 %full
 %state LEX, COUNI, COMULTI
-%debug
 
 //Simbolos
 LLAVE_APERTURA = "{"
@@ -33,7 +32,7 @@ CONJ = "CONJ"
 //Expresiones
 IDENTIFICADOR = (_)*[a-zA-ZnÑ]+[_a-zA-Z0-9ñÑ]*
 CONJUNTO = ([a-z]\~[a-z])|([^a-zA-Z0-9\~]\~[^a-zA-Z0-9\~])|([A-Z]\~[A-Z])|([0-9]\~[0-9])|([^\~](,[^\~])+)
-EXPRESION = ([\.\|\*\+\?]|\{(_)*[a-zA-ZnÑ]+[_a-zA-Z0-9ñÑ]*\}|\"(.|(\\\")|(\\n)|(\\\'))\")+
+EXPRESION = ([\.\|\*\+\?]|\{(_)*[a-zA-ZnÑ]+[_a-zA-Z0-9ñÑ]*\}|(\"((\\\")|(\\n)|(\\\')|[^\"])\"))+
 ESPACIO = [\ \r\t\f\t]
 SALTO = [\ \n]
 
@@ -56,14 +55,14 @@ SALTO = [\ \n]
 <YYINITIAL> \<\! { yybegin(COMULTI);}
 <YYINITIAL> {ESPACIO} { }
 <YYINITIAL> {SALTO} { }
-<YYINITIAL> . {errores.add("Caracter: "+yytext()+" en la linea: "+(yyline+1)+" columna: "+(yycolumn+1));}
+<YYINITIAL> . {errores.add(new ArrayList(){{add("Caracter: "+yytext()+" No pertence al lenguaje");add(yyline+1);add(yycolumn+1);}});}
 
 <LEX>{
     \\\" { cadena+=yytext();}
     \\n { cadena+=yytext();}
     \\\' { cadena+=yytext();}
     \" { String tmp=cadena+"\""; cadena=""; yybegin(YYINITIAL); return new Symbol(sym.FRASE, yychar, yyline, tmp);}
-    [\n] { String tmp=cadena; cadena=""; errores.add("Cadena: "+tmp+" en la linea: "+(yyline+1)+" columna: "+(yychar+1)); yybegin (YYINITIAL);}
+    [\n] { String tmp=cadena; cadena=""; errores.add(new ArrayList(){{add("Cadena: "+tmp+"");add(yyline+1);add(yychar+1);}}); yybegin (YYINITIAL);}
     [^\"] { cadena+=yytext(); }
 }
 

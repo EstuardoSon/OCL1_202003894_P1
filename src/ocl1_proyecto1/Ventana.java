@@ -8,6 +8,9 @@ import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -23,6 +26,7 @@ public class Ventana extends JFrame{
     private JPanel panel = new JPanel();
     private JTextArea entrada = new JTextArea();
     private JTextArea salida = new JTextArea();
+    private String nombreArchivo = "", direccionArchivo = "";
     
     public Ventana(){
         this.generarDirectorios();
@@ -59,7 +63,12 @@ public class Ventana extends JFrame{
                 int seleccion = abrirArchivo.showOpenDialog(abrirArchivo);
                 
                 if (seleccion == JFileChooser.APPROVE_OPTION) {
-                String ruta = abrirArchivo.getSelectedFile().getAbsolutePath();                                        
+                String ruta = abrirArchivo.getSelectedFile().getAbsolutePath();
+                
+                //Guardar la dirección y nombre del Archivo
+                nombreArchivo = abrirArchivo.getSelectedFile().getName().replace(".exp", "");
+                direccionArchivo = abrirArchivo.getSelectedFile().getAbsolutePath();
+
                 Scanner contenido = null;
                 String escribir = "";
                 try {
@@ -83,13 +92,52 @@ public class Ventana extends JFrame{
         });
         menu.add(abrir);
         
+        JMenuItem crear = new JMenuItem();
+        crear.setText("Nuevo Archivo");
+        crear.addActionListener(new ActionListener (){
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser abrirArchivo = new JFileChooser();
+                FileFilter filtro = new FileNameExtensionFilter("Archivos EXP (.exp)", "EXP"); 
+                abrirArchivo.setFileFilter(filtro);
+                
+                int seleccion = abrirArchivo.showOpenDialog(abrirArchivo);
+                
+                if (seleccion == JFileChooser.APPROVE_OPTION) {
+
+                    //Guardar la dirección y nombre del Archivo
+                    nombreArchivo = abrirArchivo.getSelectedFile().getName().replace(".exp", "");
+                    direccionArchivo = abrirArchivo.getSelectedFile().getAbsolutePath();
+                    
+                    File file = new File(direccionArchivo);
+                    try {
+                        file.createNewFile();
+                        entrada.setText("");
+                    } catch (IOException ex) {
+                        Logger.getLogger(Ventana.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+
+                } else {
+                    System.out.println("No se ha seleccionado ningún fichero");
+                }
+            }
+        });
+        menu.add(crear);
+        
         JMenuItem guardar = new JMenuItem();
         guardar.setText("Guardar Archivo");
         guardar.addActionListener(new ActionListener (){
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                //Instrucciones para cargar Archivo
+                try {
+                    FileWriter escribir = new FileWriter(direccionArchivo);
+                    escribir.write(entrada.getText());
+                    escribir.close();
+                } catch (IOException ex) {
+                    Logger.getLogger(Ventana.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
         menu.add(guardar);
@@ -100,21 +148,35 @@ public class Ventana extends JFrame{
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                //Instrucciones para cargar Archivo
+                JFileChooser abrirArchivo = new JFileChooser();
+                FileFilter filtro = new FileNameExtensionFilter("Archivos EXP (.exp)", "EXP"); 
+                abrirArchivo.setFileFilter(filtro);
+                
+                int seleccion = abrirArchivo.showOpenDialog(abrirArchivo);
+                
+                if (seleccion == JFileChooser.APPROVE_OPTION) {
+
+                    //Guardar la dirección y nombre del Archivo
+                    nombreArchivo = abrirArchivo.getSelectedFile().getName().replace(".exp", "");
+                    direccionArchivo = abrirArchivo.getSelectedFile().getAbsolutePath();
+                    
+                    File file = new File(direccionArchivo);
+                    try {
+                        file.createNewFile();
+                        FileWriter escritor = new FileWriter(file);
+                        escritor.write(entrada.getText());
+                        
+                    } catch (IOException ex) {
+                        Logger.getLogger(Ventana.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+
+                } else {
+                    System.out.println("No se ha seleccionado ningún fichero");
+                }
             }
         });
         menu.add(guardarC);
         
-        JMenuItem generarXML = new JMenuItem();
-        generarXML.setText("Generar XML");
-        generarXML.addActionListener(new ActionListener (){
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //Instrucciones para cargar Archivo
-            }
-        });
-        menu.add(generarXML);
         barraMenu.add(menu);
         panel.add(barraMenu);
     }
@@ -161,20 +223,36 @@ public class Ventana extends JFrame{
         analizar.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
+                String directorioActual = System.getProperty("user.dir");
                 AnalizadorLexico lexico = new AnalizadorLexico(new BufferedReader(new StringReader(entrada.getText())));
                 parser sintactico = new parser(lexico);
                 try {
                     sintactico.parse();
                     for(int i = 0; i< sintactico.action_obj.listaConjuntos.size(); i++){
                         List atConjunto = (ArrayList) sintactico.action_obj.listaConjuntos.get(i);
-                        System.out.println(atConjunto.get(0));
+                        //System.out.println(atConjunto.get(0));
                     }
+                    
+                    FileWriter archivo = new FileWriter(directorioActual+"/Reportes_202003894/Errores_202003894/"+nombreArchivo+".html"); 
+                    archivo.write("<!DOCTYPE html>\n<head>\n<title>Errores</title>\n</head>\n<body>\n<table border='2'>\n<tr>\n<th>#</th>\n<th>Tipo de Error</th>\n<th>Descripcion</th>"
+                            + "\n<th>Linea</th>\n<th>Columna</th>\n</tr>\n");
+                    
+                    int contador = 1;
                     for(int i = 0; i< lexico.errores.size(); i++){
-                        System.out.println(lexico.errores.get(i));
+                        List atErrores = (ArrayList) lexico.errores.get(i);
+                        archivo.write("\n<tr>\n<td>"+contador+"</td>\n<td>Lexico</td>\n<td>"+atErrores.get(0)+"</td>"
+                            + "\n<td>"+atErrores.get(1)+"</td>\n<td>"+atErrores.get(2)+"</td>\n</tr>\n");
+                        contador++;
                     }
                     for(int i = 0; i< sintactico.errores.size(); i++){
-                        System.out.println(sintactico.errores.get(i));
+                        List atErrores = (ArrayList) sintactico.errores.get(i);
+                        archivo.write("\n<tr>\n<td>"+contador+"</td>\n<td>Sintactico</td>\n<td>"+atErrores.get(0)+"</td>"
+                            + "\n<td>"+atErrores.get(1)+"</td>\n<td>"+atErrores.get(2)+"</td>\n</tr>\n");
+                        contador++;
                     }
+                    archivo.write("</table>\n</body>");
+                    archivo.close();
+                    
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
