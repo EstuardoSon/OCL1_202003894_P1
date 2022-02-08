@@ -1,12 +1,12 @@
 
-package ocl1_proyecto1;
+package Analizadores;
 
 public class GenerarAnalizadores {
     public static void main(String []args){
         try{
-            String  opcFlex[] = {"src/ocl1_proyecto1/Lexico.jflex","-d","src/ocl1_proyecto1"};
+            String  opcFlex[] = {"src/Analizadores/Lexico.jflex","-d","src/Analizadores"};
             JFlex.Main.generate(opcFlex);
-            String opcCup [] ={"-destdir","src/ocl1_proyecto1","-parser","parser","src/ocl1_proyecto1/Sintactico.cup"};
+            String opcCup [] ={"-destdir","src/Analizadores","-parser","parser","src/Analizadores/Sintactico.cup"};
             java_cup.Main.main(opcCup);
         } catch(Exception e){
             e.printStackTrace();

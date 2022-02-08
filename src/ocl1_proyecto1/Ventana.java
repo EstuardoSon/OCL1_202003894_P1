@@ -1,5 +1,10 @@
 package ocl1_proyecto1;
-
+import Analizadores.*;
+import Arboles.*;
+import static ocl1_proyecto1.OCL1_Proyecto1.ListaConjuntos;
+import static ocl1_proyecto1.OCL1_Proyecto1.ListaExpresiones;
+import static ocl1_proyecto1.OCL1_Proyecto1.ListaVerificaciones;
+import static ocl1_proyecto1.OCL1_Proyecto1.ListaErrores;
 import java.awt.Color;
 import java.awt.Font;
 import java.util.List;
@@ -10,7 +15,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -27,9 +31,7 @@ public class Ventana extends JFrame{
     private JTextArea entrada = new JTextArea();
     private JTextArea salida = new JTextArea();
     private String nombreArchivo = "", direccionArchivo = "";
-    
-    private List listaConjuntos, listaExpresiones, ListaVerificaciones;
-    
+        
     public Ventana(){
         this.generarDirectorios();
         
@@ -218,6 +220,16 @@ public class Ventana extends JFrame{
         automata.setBounds(40, 350, 150, 20);
         this.panel.add(automata);
         
+        automata.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                for(int i=0; i< ListaExpresiones.size(); i++){
+                    List lista = (ArrayList) ListaExpresiones.get(i);
+                    CambioNotacion cambio = new CambioNotacion(((String) lista.get(1)),((String) lista.get(0)));
+                }
+            }
+        });
+        
         JButton analizar = new JButton("Analizar Entradas");
         analizar.setBounds(230, 350, 150, 20);
         this.panel.add(analizar);
@@ -225,26 +237,29 @@ public class Ventana extends JFrame{
         analizar.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
+                ListaConjuntos = new ArrayList<List>();
+                ListaErrores = new ArrayList<List>();
+                ListaVerificaciones = new ArrayList<List>();
+                ListaExpresiones = new ArrayList<List>();
+                
                 String directorioActual = System.getProperty("user.dir");
                 AnalizadorLexico lexico = new AnalizadorLexico(new BufferedReader(new StringReader(entrada.getText())));
                 parser sintactico = new parser(lexico);
                 try {
                     sintactico.parse();
-                    listaConjuntos = sintactico.action_obj.listaConjuntos;
-                    for(int i = 0; i< sintactico.action_obj.listaConjuntos.size(); i++){
-                        List atConjunto = (ArrayList) sintactico.action_obj.listaConjuntos.get(i);
+                    
+                    for(int i = 0; i< ListaConjuntos.size(); i++){
+                        List atConjunto = (ArrayList) ListaConjuntos.get(i);
                         System.out.println(atConjunto.get(0)+" "+atConjunto.get(1));
                     }
                     
-                    listaExpresiones = sintactico.action_obj.listaExpresiones;
-                    for(int i = 0; i< sintactico.action_obj.listaExpresiones.size(); i++){
-                        List atConjunto = (ArrayList) sintactico.action_obj.listaExpresiones.get(i);
+                    for(int i = 0; i< ListaExpresiones.size(); i++){
+                        List atConjunto = (ArrayList) ListaExpresiones.get(i);
                         System.out.println(atConjunto.get(0)+" "+atConjunto.get(1));
                     }
                     
-                    listaExpresiones = sintactico.action_obj.listaVerificaciones;
-                    for(int i = 0; i< sintactico.action_obj.listaVerificaciones.size(); i++){
-                        List atConjunto = (ArrayList) sintactico.action_obj.listaVerificaciones.get(i);
+                    for(int i = 0; i< ListaVerificaciones.size(); i++){
+                        List atConjunto = (ArrayList) ListaVerificaciones.get(i);
                         System.out.println(atConjunto.get(0)+" "+atConjunto.get(1));
                     }
                     
@@ -253,18 +268,13 @@ public class Ventana extends JFrame{
                             + "\n<th>Linea</th>\n<th>Columna</th>\n</tr>\n");
                     
                     int contador = 1;
-                    for(int i = 0; i< lexico.errores.size(); i++){
-                        List atErrores = (ArrayList) lexico.errores.get(i);
-                        archivo.write("\n<tr>\n<td>"+contador+"</td>\n<td>Lexico</td>\n<td>"+atErrores.get(0)+"</td>"
-                            + "\n<td>"+atErrores.get(1)+"</td>\n<td>"+atErrores.get(2)+"</td>\n</tr>\n");
+                    for(int i = 0; i< ListaErrores.size(); i++){
+                        List atErrores = (ArrayList) ListaErrores.get(i);
+                        archivo.write("\n<tr>\n<td>"+contador+"</td>\n<td>"+atErrores.get(0)+"</td>\n<td>"+atErrores.get(1)+"</td>"
+                            + "\n<td>"+atErrores.get(2)+"</td>\n<td>"+atErrores.get(3)+"</td>\n</tr>\n");
                         contador++;
                     }
-                    for(int i = 0; i< sintactico.errores.size(); i++){
-                        List atErrores = (ArrayList) sintactico.errores.get(i);
-                        archivo.write("\n<tr>\n<td>"+contador+"</td>\n<td>Sintactico</td>\n<td>"+atErrores.get(0)+"</td>"
-                            + "\n<td>"+atErrores.get(1)+"</td>\n<td>"+atErrores.get(2)+"</td>\n</tr>\n");
-                        contador++;
-                    }
+                    
                     archivo.write("</table>\n</body>");
                     archivo.close();
                     

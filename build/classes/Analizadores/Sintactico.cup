@@ -1,26 +1,26 @@
-package ocl1_proyecto1;
+package Analizadores;
 
+/*Quitar los import Static y colocar una vez generado el archivo*/
+import static ocl1_proyecto1.OCL1_Proyecto1.ListaErrores;
+import static ocl1_proyecto1.OCL1_Proyecto1.ListaConjuntos;
+import static ocl1_proyecto1.OCL1_Proyecto1.ListaVerificaciones;
+import static ocl1_proyecto1.OCL1_Proyecto1.ListaExpresiones;
 import java_cup.runtime.Symbol;
-import java.util.List;
 import java.util.ArrayList;
 
 action code
 {:
     String instruccion="", segVerificar="";
-    List listaConjuntos = new ArrayList();
-    List listaExpresiones = new ArrayList();
-    List listaVerificaciones = new ArrayList();
 :}
 
 parser code
 {:
-    List errores = new ArrayList();
 
     public void syntax_error(Symbol s){
-       errores.add(new ArrayList(){{add("Error Recuperable "+s.value+" , se esperaba otro token");add(s.left+1);add(s.right+1);}});
+       ListaErrores.add(new ArrayList(){{add("Sintactico"); add("Error Recuperable "+s.value+" , se esperaba otro token");add(s.left+1);add(s.right+1);}});
     }
     public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception{
-       errores.add(new ArrayList(){{add("Error NO Recuperable "+s.value+" , se esperaba otro token");add(s.left+1);add(s.right+1);}});
+       ListaErrores.add(new ArrayList(){{add("Sintactico") ;add("Error NO Recuperable "+s.value+" , se esperaba otro token");add(s.left+1);add(s.right+1);}});
     }
 :}
 
@@ -55,12 +55,12 @@ SEPARADORES::= SEPARADOR:sep SEPARADORES:seps
 CONJUNTOS::= CONJ:conj DOS_PTS IDENTIFICADOR:id ASIGNACION CONJUNTO:co PT_COMA
     {:
         instruccion += conj+": "+id+" -> "+co+";\n";
-        listaConjuntos.add(new ArrayList(){{add(id);add(co);}});
+        ListaConjuntos.add(new ArrayList(){{add(id);add(co);}});
     :}  
     | CONJUNTOS:sigcon CONJ:conj DOS_PTS IDENTIFICADOR:id ASIGNACION CONJUNTO:co PT_COMA 
     {:
         instruccion += conj+": "+id+" -> "+co+";\n";
-        listaConjuntos.add(new ArrayList(){{add(id);add(co);}});
+        ListaConjuntos.add(new ArrayList(){{add(id);add(co);}});
     :} 
     | error PT_COMA
 ;
@@ -69,12 +69,12 @@ CONJUNTOS::= CONJ:conj DOS_PTS IDENTIFICADOR:id ASIGNACION CONJUNTO:co PT_COMA
 EXPRESIONES::= IDENTIFICADOR:id ASIGNACION EXPRESION:ex PT_COMA
     {:
         instruccion += id+" -> "+ex+";\n";
-        listaExpresiones.add(new ArrayList(){{add(id);add(ex);}});
+        ListaExpresiones.add(new ArrayList(){{add(id);add(ex);}});
     :} 
     |EXPRESIONES:sigexp IDENTIFICADOR:id ASIGNACION EXPRESION:ex PT_COMA 
     {:
         instruccion += id+" -> "+ex+";\n";
-        listaExpresiones.add(new ArrayList(){{add(id);add(ex);}});
+        ListaExpresiones.add(new ArrayList(){{add(id);add(ex);}});
     :}
     | error PT_COMA
     | error SEPARADOR
@@ -84,12 +84,12 @@ EXPRESIONES::= IDENTIFICADOR:id ASIGNACION EXPRESION:ex PT_COMA
 VERIFICACIONES::= IDENTIFICADOR:id DOS_PTS FRASE:fra PT_COMA
     {:
         segVerificar += id+" : \""+fra+"\";\n";
-        listaVerificaciones.add(new ArrayList(){{add(id);add(fra);}});
+        ListaVerificaciones.add(new ArrayList(){{add(id);add(fra);}});
     :}  
     |VERIFICACIONES:sigver IDENTIFICADOR:id DOS_PTS FRASE:fra PT_COMA 
     {:
         segVerificar += id+" : \""+fra+"\";\n";
-        listaVerificaciones.add(new ArrayList(){{add(id);add(fra);}});
+        ListaVerificaciones.add(new ArrayList(){{add(id);add(fra);}});
     :}
     | error PT_COMA
     | error SEPARADOR

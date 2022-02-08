@@ -1,11 +1,13 @@
-package ocl1_proyecto1;
+package Analizadores;
+
+import ocl1_proyecto1.*;
+import static ocl1_proyecto1.OCL1_Proyecto1.ListaErrores;
 import java_cup.runtime.Symbol;
 import java.util.*; 
 
 %%
 
 %{
-    List errores = new ArrayList();
     String cadena = "";
 %}
 
@@ -32,7 +34,7 @@ CONJ = "CONJ"
 //Expresiones
 IDENTIFICADOR = (_)*[a-zA-ZnÑ]+[_a-zA-Z0-9ñÑ]*
 CONJUNTO = ([a-z]\~[a-z])|([^a-zA-Z0-9\~]\~[^a-zA-Z0-9\~])|([A-Z]\~[A-Z])|([0-9]\~[0-9])|([^\~](,[^\~])+)
-EXPRESION = ([\.\|\*\+\?]|\{(_)*[a-zA-ZnÑ]+[_a-zA-Z0-9ñÑ]*\}|(\"((\\\")|(\\n)|(\\\')|[^\"])\"))+
+EXPRESION = ([\.\|\*\+\?]|[a-zA-Z0-9ñÑ]|\{(_)*[a-zA-ZnÑ]+[_a-zA-Z0-9ñÑ]*\}|(\"((\\\")|(\\n)|(\\\')|[^\"])\"))+
 ESPACIO = [\ \r\t\f\t]
 SALTO = [\ \n]
 
@@ -55,14 +57,14 @@ SALTO = [\ \n]
 <YYINITIAL> \<\! { yybegin(COMULTI);}
 <YYINITIAL> {ESPACIO} { }
 <YYINITIAL> {SALTO} { }
-<YYINITIAL> . {errores.add(new ArrayList(){{add("Caracter: "+yytext()+" No pertence al lenguaje");add(yyline+1);add(yycolumn+1);}});}
+<YYINITIAL> . {ListaErrores.add(new ArrayList(){{add("Caracter: "+yytext()+" No pertence al lenguaje");add(yyline+1);add(yycolumn+1);}});}
 
 <LEX>{
     \\\" { cadena+=yytext();}
     \\n { cadena+=yytext();}
     \\\' { cadena+=yytext();}
     \" { String tmp=cadena; cadena=""; yybegin(YYINITIAL); return new Symbol(sym.FRASE, yychar, yyline, tmp);}
-    [\n] { String tmp=cadena; cadena=""; errores.add(new ArrayList(){{add("Cadena: "+tmp+"");add(yyline+1);add(yychar+1);}}); yybegin (YYINITIAL);}
+    [\n] { String tmp=cadena; cadena=""; ListaErrores.add(new ArrayList(){{add("Lexico"); add("Cadena: "+tmp+" se esperaba una \"");add(yyline+1);add(yychar+1);}}); yybegin (YYINITIAL);}
     [^\"] { cadena+=yytext(); }
 }
 

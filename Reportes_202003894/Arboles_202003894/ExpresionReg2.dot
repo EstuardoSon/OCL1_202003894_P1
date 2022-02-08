@@ -1,0 +1,25 @@
+digraph G{
+7->6
+6->5
+5[label="N
+digito"];
+6[label="N
+."];
+6->4
+4->3
+3[label="N
+."];
+4[label="N
+."];
+4->2
+2->1
+1[label="N
+digito"];
+2[label="N
++"];
+7[label="N
+."];
+7->8
+8[label="N
+#"];
+}
