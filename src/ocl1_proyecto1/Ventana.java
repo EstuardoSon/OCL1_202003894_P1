@@ -248,6 +248,7 @@ public class Ventana extends JFrame{
                 try {
                     sintactico.parse();
                     
+                    /*
                     for(int i = 0; i< ListaConjuntos.size(); i++){
                         List atConjunto = (ArrayList) ListaConjuntos.get(i);
                         System.out.println(atConjunto.get(0)+" "+atConjunto.get(1));
@@ -263,6 +264,8 @@ public class Ventana extends JFrame{
                         System.out.println(atConjunto.get(0)+" "+atConjunto.get(1));
                     }
                     
+                    */
+
                     FileWriter archivo = new FileWriter(directorioActual+"/Reportes_202003894/Errores_202003894/"+nombreArchivo+".html"); 
                     archivo.write("<!DOCTYPE html>\n<head>\n<title>Errores</title>\n</head>\n<body>\n<table border='2'>\n<tr>\n<th>#</th>\n<th>Tipo de Error</th>\n<th>Descripcion</th>"
                             + "\n<th>Linea</th>\n<th>Columna</th>\n</tr>\n");

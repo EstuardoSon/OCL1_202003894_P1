@@ -1,9 +1,9 @@
 package Arboles;
 
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -74,9 +74,9 @@ public class Pila {
         }
         
         if (aux.anulable){
-            dot += aux.noNodo+"[label=\"A\n"+aux.texto+"\"];\n";
+            dot += aux.noNodo+"[label=\"A\n"+aux.texto+"\nP: "+aux.primeros.imprimirLista()+"\nU: "+aux.ultimos.imprimirLista()+"\"];\n";
         }else{
-            dot += aux.noNodo+"[label=\"N\n"+aux.texto+"\"];\n";
+            dot += aux.noNodo+"[label=\"N\n"+aux.texto+"\nP: "+aux.primeros.imprimirLista()+"\nU: "+aux.ultimos.imprimirLista()+"\"];\n";
         }
             
         if(aux.derecha != null){
