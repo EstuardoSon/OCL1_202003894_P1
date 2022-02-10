@@ -8,14 +8,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
-public class Pila {
+public class FormacionArbol {
     
     public Nodo primero, ultimo;
     public NodoArbol raiz = null;
     public String dot ="";
     public String nombre = "";
     
-    public Pila(String nombre){
+    public FormacionArbol(String nombre){
         this.primero = null;
         this.ultimo = null;
         this.nombre = nombre;
@@ -92,7 +92,7 @@ public class Pila {
         try {
             filedot.createNewFile();
         } catch (IOException ex) {
-            Logger.getLogger(Pila.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(FormacionArbol.class.getName()).log(Level.SEVERE, null, ex);
         }
         finally{
             try {
@@ -103,8 +103,8 @@ public class Pila {
                 ProcessBuilder proceso = new ProcessBuilder("dot", "-Tpng","-o",dirActual+"/Reportes_202003894/Arboles_202003894/"+ this.nombre +".png",dirActual+"/Reportes_202003894/Arboles_202003894/"+ this.nombre +".dot");
                 proceso.redirectErrorStream(true);
                 proceso.start();
-                } catch (IOException ex) {
-                    Logger.getLogger(Pila.class.getName()).log(Level.SEVERE, null, ex);
+                }  catch (IOException ex) {
+                    Logger.getLogger(FormacionArbol.class.getName()).log(Level.SEVERE, null, ex);
                 } 
             catch (Exception e){
                 e.printStackTrace();

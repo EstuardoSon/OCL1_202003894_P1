@@ -3,11 +3,12 @@ package Arboles;
 
 public class CambioNotacion {
     
-    public ListaSiguientes tablaSiguientes= new ListaSiguientes();
+    public ListaSiguientes tablaSiguientes;
     
     public CambioNotacion(String texto, String nombre){
         int largo = texto.length();
-        Pila pila = new Pila(nombre);
+        tablaSiguientes = new ListaSiguientes(nombre);
+        FormacionArbol pila = new FormacionArbol(nombre);
         
         int contHojas = 1;
         
