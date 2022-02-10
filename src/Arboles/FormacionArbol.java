@@ -14,11 +14,15 @@ public class FormacionArbol {
     public NodoArbol raiz = null;
     public String dot ="";
     public String nombre = "";
+    public int contadorHojas = 1;
+    public int contadorNodos = 1;
+    public ListaSiguientes tablaSiguientes;
     
     public FormacionArbol(String nombre){
         this.primero = null;
         this.ultimo = null;
         this.nombre = nombre;
+        tablaSiguientes = new ListaSiguientes(nombre);
     }
     
     public void insertar(NodoArbol nodo){
@@ -62,6 +66,7 @@ public class FormacionArbol {
         this.recorrerArbol(this.raiz);
         
         this.dot += "}\n";
+        System.out.println(this.dot);
         return this.dot;
     }
     
@@ -69,18 +74,33 @@ public class FormacionArbol {
         NodoArbol aux = nuevo;
         
         if(aux.izquierda != null){
-            dot += aux.noNodo+"->"+aux.izquierda.noNodo+"\n";
+            dot += "N"+aux.noNodo+"->";
+            if(!aux.izquierda.hoja){
+                dot+= "N"+aux.izquierda.noNodo+"\n";
+            }else{
+                dot+= aux.izquierda.noNodo+"\n";
+            }
             this.recorrerArbol(nuevo.izquierda);
         }
         
-        if (aux.anulable){
-            dot += aux.noNodo+"[label=\"A\n"+aux.texto+"\nP: "+aux.primeros.imprimirLista()+"\nU: "+aux.ultimos.imprimirLista()+"\"];\n";
-        }else{
+        if(aux.hoja){
             dot += aux.noNodo+"[label=\"N\n"+aux.texto+"\nP: "+aux.primeros.imprimirLista()+"\nU: "+aux.ultimos.imprimirLista()+"\"];\n";
+        }
+        if(!aux.hoja){
+            if (aux.anulable){
+                dot += "N"+aux.noNodo+"[label=\"A\n"+aux.texto+"\nP: "+aux.primeros.imprimirLista()+"\nU: "+aux.ultimos.imprimirLista()+"\"];\n";
+            }else{
+                dot += "N"+aux.noNodo+"[label=\"N\n"+aux.texto+"\nP: "+aux.primeros.imprimirLista()+"\nU: "+aux.ultimos.imprimirLista()+"\"];\n";
+            }
         }
             
         if(aux.derecha != null){
-            dot += aux.noNodo+"->"+aux.derecha.noNodo+"\n";
+            dot += "N"+aux.noNodo+"->";
+            if(!aux.derecha.hoja){
+                dot+= "N"+aux.derecha.noNodo+"\n";
+            }else{
+                dot+= aux.derecha.noNodo+"\n";
+            }
             this.recorrerArbol(nuevo.derecha);
         }
     }
@@ -109,6 +129,115 @@ public class FormacionArbol {
             catch (Exception e){
                 e.printStackTrace();
             }
+        }
+    }
+    
+    public void numerarNodos(NodoArbol nodo){
+        
+        if (nodo.izquierda != null){
+            this.numerarNodos(nodo.izquierda);
+        }
+        
+        if(nodo.hoja){
+            nodo.noNodo = this.contadorHojas;
+            this.contadorHojas ++;
+        }
+        if(!nodo.hoja){
+            nodo.noNodo = this.contadorNodos;
+            this.contadorNodos ++;
+        }
+        
+        if (nodo.derecha != null){
+            this.numerarNodos(nodo.derecha);
+        }
+    }
+    
+    public void PrimUltSig(NodoArbol nodo){
+        if (nodo.izquierda != null){
+            this.PrimUltSig(nodo.izquierda);
+        }
+        
+        if (nodo.derecha != null){
+            this.PrimUltSig(nodo.derecha);
+        }
+        
+        
+        if (".".equals(nodo.texto) && !nodo.hoja){
+            nodo.primeros.insertarLista(nodo.izquierda.primeros);
+            nodo.ultimos.insertarLista(nodo.derecha.ultimos);
+
+            if (nodo.izquierda.anulable == true && nodo.derecha.anulable == true){                    
+                nodo.anulable = true;
+            }
+            if (nodo.izquierda.anulable){
+                nodo.primeros.insertarLista(nodo.derecha.primeros); 
+            }
+            if (nodo.derecha.anulable){
+                nodo.ultimos.insertarLista(nodo.izquierda.ultimos); 
+            }
+
+            NodoPU aux = nodo.izquierda.ultimos.primero;
+            while(aux != null){
+                this.tablaSiguientes.insertar(aux.Lexema, aux.noNodo, nodo.derecha.primeros.imprimirLista());
+                aux = aux.siguiente;
+            }
+        }
+                
+        else if ("?".equals(nodo.texto) && !nodo.hoja){
+            nodo.primeros.insertarLista(nodo.izquierda.primeros);
+            nodo.ultimos.insertarLista(nodo.izquierda.ultimos);
+        }
+            
+        else if ("*".equals(nodo.texto) && !nodo.hoja){
+            nodo.primeros.insertarLista(nodo.izquierda.primeros);
+            nodo.ultimos.insertarLista(nodo.izquierda.ultimos);
+
+            NodoPU aux = nodo.izquierda.ultimos.primero;
+            while(aux != null){
+                this.tablaSiguientes.insertar(aux.Lexema, aux.noNodo, nodo.izquierda.primeros.imprimirLista());
+                aux = aux.siguiente;
+            } 
+        }
+                
+        else if ("+".equals(nodo.texto) && !nodo.hoja){
+            nodo.primeros.insertarLista(nodo.izquierda.primeros);
+            nodo.ultimos.insertarLista(nodo.izquierda.ultimos);
+
+            if (nodo.izquierda.anulable == true){
+                nodo.anulable = true;
+            }
+
+            NodoPU aux = nodo.izquierda.ultimos.primero;
+            while(aux != null){
+                this.tablaSiguientes.insertar(aux.Lexema, aux.noNodo, nodo.izquierda.primeros.imprimirLista());
+                aux = aux.siguiente;
+            }
+        }
+            
+        else if ("|".equals(nodo.texto) && !nodo.hoja){
+            nodo.primeros.insertarLista(nodo.izquierda.primeros);
+            nodo.primeros.insertarLista(nodo.derecha.primeros);
+            nodo.ultimos.insertarLista(nodo.izquierda.ultimos);
+            nodo.ultimos.insertarLista(nodo.derecha.ultimos);       
+
+            if (nodo.izquierda.anulable == true || nodo.derecha.anulable == true){
+                nodo.anulable = true;
+            }
+        }
+            
+        else{
+                nodo.primeros.insertar(String.valueOf(nodo.noNodo), nodo.texto);
+                nodo.ultimos.insertar(String.valueOf(nodo.noNodo), nodo.texto);
+        }
+    }
+    
+    public void imprimirArbol(NodoArbol nodo){
+        if (nodo.izquierda != null){
+            this.imprimirArbol(nodo.izquierda);
+        }
+        System.out.println(nodo.texto);
+        if (nodo.derecha != null){
+            this.imprimirArbol(nodo.derecha);
         }
     }
 }

@@ -9,21 +9,22 @@ public class NodoArbol {
     public ListaPU ultimos;
     public ListaPU primeros;
     
-    public NodoArbol(String contenido, int noNodo){
+    public NodoArbol(String contenido){
         this.anulable = false;
         this.izquierda = null;
         this.hoja = true;
-        this.noNodo = noNodo;
+        this.noNodo = 0;
         this.derecha = null;
         this.texto = contenido;
         this.primeros= new ListaPU();
         this.ultimos= new ListaPU();
     }
     
-    public NodoArbol(String contenido, boolean anulable, int noNodo){
+    public NodoArbol(String contenido, boolean anulable){
         this.anulable = anulable;
         this.izquierda = null;
-        this.noNodo = noNodo;
+        this.hoja = false;
+        this.noNodo = 0;
         this.derecha = null;
         this.texto = contenido;
         this.primeros = new ListaPU();

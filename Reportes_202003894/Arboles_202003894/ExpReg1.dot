@@ -1,51 +1,51 @@
 digraph G{
-9->8
-8->7
-7[label="N
-letra
-P: 7
-U: 7"];
-8[label="N
-.
-P: 7
-U: 4,2,1,7"];
-8->6
-6->5
-5->4
-4[label="N
-\"
-P: 4
-U: 4"];
-5[label="N
-|
-P: 4,2,1
-U: 4,2,1"];
-5->3
-3->2
-2[label="N
-letra
-P: 2
-U: 2"];
-3[label="N
-|
-P: 2,1
-U: 2,1"];
-3->1
+N5->N1
+N1->1
 1[label="N
-digito
+letra
 P: 1
 U: 1"];
-6[label="A
-*
-P: 4,2,1
-U: 4,2,1"];
-9[label="N
+N1[label="N
 .
-P: 7
-U: 10"];
-9->10
-10[label="N
+P: 1
+U: 2,3,4,1"];
+N1->N4
+N4->N2
+N2->2
+2[label="N
+\"
+P: 2
+U: 2"];
+N2[label="N
+|
+P: 2,3,4
+U: 2,3,4"];
+N2->N3
+N3->3
+3[label="N
+letra
+P: 3
+U: 3"];
+N3[label="N
+|
+P: 3,4
+U: 3,4"];
+N3->4
+4[label="N
+digito
+P: 4
+U: 4"];
+N4[label="A
+*
+P: 2,3,4
+U: 2,3,4"];
+N5[label="N
+.
+P: 1
+U: 5"];
+N5->5
+5[label="N
 #
-P: 10
-U: 10"];
+P: 5
+U: 5"];
 }

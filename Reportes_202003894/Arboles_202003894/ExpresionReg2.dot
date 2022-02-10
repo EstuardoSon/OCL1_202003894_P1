@@ -1,41 +1,41 @@
 digraph G{
-7->6
-6->5
-5[label="N
-digito
-P: 5
-U: 5"];
-6[label="N
-.
-P: 5
-U: 1"];
-6->4
-4->3
-3[label="N
-.
-P: 3
-U: 3"];
-4[label="N
-.
-P: 3
-U: 1"];
-4->2
-2->1
+N4->N1
+N1->1
 1[label="N
 digito
 P: 1
 U: 1"];
-2[label="N
-+
-P: 1
-U: 1"];
-7[label="N
+N1[label="N
 .
-P: 5
-U: 8"];
-7->8
-8[label="N
+P: 1
+U: 3"];
+N1->N2
+N2->2
+2[label="N
+.
+P: 2
+U: 2"];
+N2[label="N
+.
+P: 2
+U: 3"];
+N2->N3
+N3->3
+3[label="N
+digito
+P: 3
+U: 3"];
+N3[label="N
++
+P: 3
+U: 3"];
+N4[label="N
+.
+P: 1
+U: 4"];
+N4->4
+4[label="N
 #
-P: 8
-U: 8"];
+P: 4
+U: 4"];
 }
