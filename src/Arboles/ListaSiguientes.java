@@ -26,12 +26,33 @@ public class ListaSiguientes {
         }
         else{
             NodoSiguientes nuevo = new NodoSiguientes(lexema, nodo, siguientes);
-            if(this.primero != null){
-                this.ultimo.siguiente = nuevo;
+            if (this.primero == null){
+                this.primero = this.ultimo = nuevo;
+            }
+            else if (Integer.parseInt(this.primero.nodo) < Integer.parseInt(nuevo.nodo) && this.primero.siguiente == null){
+                this.primero.siguiente = nuevo;
                 this.ultimo = nuevo;
             }
+            else if (Integer.parseInt(this.primero.nodo) > Integer.parseInt(nuevo.nodo)){
+                nuevo.siguiente = this.primero;
+                this.primero = nuevo;
+            }
             else{
-                this.primero = this.ultimo = nuevo;
+                NodoSiguientes aux2 = this.primero;
+                while(aux2 != null){
+                    if (aux2 == this.ultimo && Integer.parseInt(aux2.nodo) < Integer.parseInt(nuevo.nodo)){
+                        aux2.siguiente = nuevo;
+                        this.ultimo = nuevo;
+                        break;
+                    }
+                    else if (aux2 != this.ultimo && Integer.parseInt(aux2.siguiente.nodo) > Integer.parseInt(nuevo.nodo) && Integer.parseInt(aux2.nodo) < Integer.parseInt(nuevo.nodo)){
+                        nuevo.siguiente = aux2.siguiente;
+                        aux2.siguiente = nuevo;
+                        break;
+                    }
+
+                    aux2 = aux2.siguiente;
+                }
             }
         }
     }
@@ -53,7 +74,7 @@ public class ListaSiguientes {
         NodoSiguientes aux = this.primero;
         String rutaActual = System.getProperty("user.dir");
         
-        String html = "<table border=\"2\">\n<tr>\n<td colspan=\"2\">Hoja</td>\n<td>Siguientes</td>\n<tr>\n";
+        String html = "<table border=\"2\">\n<tr>\n<th colspan=\"2\">Hoja</th>\n<th>Siguientes</th>\n<tr>\n";
         
         while(aux != null){
             html += "</tr>\n<td>"+aux.lexema+"</td>\n<td>"+aux.nodo+"</td>\n<td>"+aux.listSiguientes+"</td>\n<tr>\n";
