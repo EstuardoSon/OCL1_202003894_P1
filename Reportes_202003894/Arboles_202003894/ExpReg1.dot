@@ -1,5 +1,5 @@
 digraph G{
-N5->N1
+N6->N1
 N1->1
 1[label="N
 letra
@@ -8,44 +8,54 @@ U: 1"];
 N1[label="N
 .
 P: 1
-U: 2,3,4,1"];
-N1->N4
-N4->N2
+U: 3,4,5,1"];
+N1->N5
+N5->N3
+N3->N2
 N2->2
 2[label="N
 \"
 P: 2
 U: 2"];
 N2[label="N
-|
-P: 2,3,4
-U: 2,3,4"];
-N2->N3
-N3->3
+.
+P: 2
+U: 3"];
+N2->3
 3[label="N
-letra
+\"
 P: 3
 U: 3"];
 N3[label="N
 |
-P: 3,4
-U: 3,4"];
-N3->4
+P: 2,4,5
+U: 3,4,5"];
+N3->N4
+N4->4
 4[label="N
-digito
+letra
 P: 4
 U: 4"];
-N4[label="A
-*
-P: 2,3,4
-U: 2,3,4"];
-N5[label="N
-.
-P: 1
-U: 5"];
-N5->5
+N4[label="N
+|
+P: 4,5
+U: 4,5"];
+N4->5
 5[label="N
-#
+digito
 P: 5
 U: 5"];
+N5[label="A
+*
+P: 2,4,5
+U: 3,4,5"];
+N6[label="N
+.
+P: 1
+U: 6"];
+N6->6
+6[label="N
+#
+P: 6
+U: 6"];
 }

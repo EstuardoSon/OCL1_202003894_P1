@@ -3,6 +3,8 @@ package Arboles;
 
 public class CambioNotacion {
     
+    public ListaCabecera columTransicion = new ListaCabecera();
+    
     public CambioNotacion(String texto, String nombre){
         int largo = texto.length();
         FormacionArbol pila = new FormacionArbol(nombre);
@@ -28,8 +30,34 @@ public class CambioNotacion {
                     }
                 }
                 
-                nuevo = new NodoArbol(cadena);
-                pila.insertar(nuevo);
+                if (cadena.length() == 1 || cadena.equals("\\n") || cadena.equals("\\\"") | cadena.equals("\\\'")){
+                    nuevo = new NodoArbol(cadena);
+                    pila.insertar(nuevo);
+                }
+                
+                else{
+                    int contador = 0;
+                    int j;
+                    for(j = 0; j < cadena.length(); j++){
+                        if (!String.valueOf(cadena.charAt(j)).equals("\\")){
+                            nuevo = new NodoArbol(String.valueOf(cadena.charAt(j)));
+                            pila.insertar(nuevo);
+                            contador++;
+                        }
+                        else{
+                            nuevo = new NodoArbol(String.valueOf(cadena.charAt(j)+String.valueOf(cadena.charAt(j+1))));
+                            pila.insertar(nuevo);
+                            j++;
+                            contador++;
+                        }
+                    }   
+                    for(int k = 0; k < contador-1; k++){
+                        nuevo = new NodoArbol(".", false);
+                        nuevo.izquierda = pila.extraer();
+                        nuevo.derecha = pila.extraer();
+                        pila.insertar(nuevo);
+                    }
+                }
             }
             
             else if (((int) caracter) == 125){
@@ -99,5 +127,17 @@ public class CambioNotacion {
         
         pila.crearArchivo();
         pila.tablaSiguientes.imprimir();
+        
+        /*
+        NodoSiguientes terminales = pila.tablaSiguientes.primero;
+        
+        while(terminales != null){
+            this.columTransicion.insertar(terminales.lexema);
+            terminales = terminales.siguiente;
+        }
+        
+        System.out.println("\n\nTerminales");
+        this.columTransicion.imprimir();
+        */
     }
 }
