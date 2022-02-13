@@ -18,7 +18,7 @@ import java.util.*;
 %char
 %column
 %full
-%state LEX, COUNI, COMULTI, EXPRE, EXPRE2, EXPRE3
+%state LEX, COUNI, COMULTI
 
 //Simbolos
 LLAVE_APERTURA = "{"
@@ -34,6 +34,7 @@ CONJ = "CONJ"
 //Expresiones
 IDENTIFICADOR = (_)*[a-zA-ZnÑ]+[_a-zA-Z0-9ñÑ]*
 CONJUNTO = ([a-z]\~[a-z])|([^a-zA-Z0-9\~]\~[^a-zA-Z0-9\~])|([A-Z]\~[A-Z])|([0-9]\~[0-9])|([^\~](,[^\~])+)
+EXPRESION = [\.\|\*\+\?]([a-zA-Z0-9ñÑ\|\?\+\*\.]|(\"((\\[^\n])|([^\\\"\n]))+\")|(\{(_)*[a-zA-ZnÑ]+[_a-zA-Z0-9ñÑ]*\}))+
 ESPACIO = [\ \r\t\f\t]
 SALTO = [\ \n]
 
@@ -49,34 +50,13 @@ SALTO = [\ \n]
 <YYINITIAL> {SEPARADOR} { return new Symbol(sym.SEPARADOR, yyline, yycolumn, yytext());}
 <YYINITIAL> {IDENTIFICADOR} { return new Symbol(sym.IDENTIFICADOR, yyline, yycolumn, yytext());}
 <YYINITIAL> {CONJUNTO} { return new Symbol(sym.CONJUNTO, yyline, yycolumn, yytext());}
-<YYINITIAL> [\.\|\*\+\?] { cadena+=yytext(); yybegin(EXPRE); }
+<YYINITIAL> {EXPRESION} { return new Symbol(sym.EXPRESION, yyline, yycolumn, yytext()); }
 <YYINITIAL> \" { yybegin(LEX); }
 <YYINITIAL> \/\/ { yybegin(COUNI);}
 <YYINITIAL> \<\! { yybegin(COMULTI);}
 <YYINITIAL> {ESPACIO} { }
 <YYINITIAL> {SALTO} { }
 <YYINITIAL> . {ListaErrores.add(new ArrayList(){{add("Caracter: "+yytext()+" No pertence al lenguaje");add(yyline+1);add(yycolumn+1);}});}
-
-<EXPRE>{
-    \" {cadena+=yytext(); yybegin(EXPRE2);}
-    \{(_)*[a-zA-ZnÑ]+[_a-zA-Z0-9ñÑ]*\} {cadena+=yytext();}
-    [\n] { String tmp=cadena; cadena=""; yybegin(YYINITIAL); return new Symbol(sym.EXPRESION, yychar, yyline, tmp); }
-    [\;] {yy yybegin(YYINITIAL); String tmp=cadena; cadena=""; return new Symbol(sym.EXPRESION, yychar, yyline, tmp); }
-    [\ ] { String tmp=cadena; cadena=""; yybegin(YYINITIAL); return new Symbol(sym.EXPRESION, yychar, yyline, tmp); }
-    [a-zA-Z0-9ñÑ\|\?\+\*\.] { cadena+=yytext(); }
-}
-
-<EXPRE2>{
-    \\ {cadena+= yytext(); yybegin(EXPRE3);}
-    \n { String tmp=cadena; cadena=""; ListaErrores.add(new ArrayList(){{add("Lexico"); add("Cadena: "+tmp+" error en la expresion regular");add(yyline+1);add(yychar+1);}});}
-    [^\"] { cadena+=yytext(); }
-    [\"] {cadena+=yytext(); yybegin(EXPRE);}
-}
-
-<EXPRE3>{
-    \n { String tmp=cadena; cadena=""; ListaErrores.add(new ArrayList(){{add("Lexico"); add("Cadena: "+tmp+" error en la expresion regular");add(yyline+1);add(yychar+1);}});}
-    . { cadena += yytext(); yybegin(EXPRE2);}
-}
 
 <LEX>{
     \\\" { cadena+=yytext();}

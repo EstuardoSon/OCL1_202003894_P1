@@ -17,7 +17,7 @@ public class CambioNotacion {
                 String cadena = "";
                 
                 for(int j = i-1; j>=0; j--){
-                    if(((int)texto.charAt(j)) == 34 && ((int)texto.charAt(j-1)) == 92){
+                    if(((int)texto.charAt(j-1)) == 92){
                         cadena += String.valueOf(texto.charAt(j-1))+String.valueOf(texto.charAt(j));
                         j=j-1;
                     }
@@ -30,7 +30,11 @@ public class CambioNotacion {
                     }
                 }
                 
-                if (cadena.length() == 1 || cadena.equals("\\n") || cadena.equals("\\\"") | cadena.equals("\\\'")){
+                if (cadena.length() == 1){
+                    nuevo = new NodoArbol(cadena);
+                    pila.insertar(nuevo);
+                }
+                else if(cadena.length() == 2 && String.valueOf(cadena.charAt(1)).equals("\\")){
                     nuevo = new NodoArbol(cadena);
                     pila.insertar(nuevo);
                 }
@@ -45,7 +49,7 @@ public class CambioNotacion {
                             contador++;
                         }
                         else{
-                            nuevo = new NodoArbol(String.valueOf(cadena.charAt(j)+String.valueOf(cadena.charAt(j+1))));
+                            nuevo = new NodoArbol("\\"+String.valueOf(cadena.charAt(j+1)));
                             pila.insertar(nuevo);
                             j++;
                             contador++;

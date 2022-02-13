@@ -83,7 +83,15 @@ public class FormacionArbol {
         }
         
         if(aux.hoja){
-            dot += aux.noNodo+"[label=\"N\n"+aux.texto+"\nP: "+aux.primeros.imprimirLista()+"\nU: "+aux.ultimos.imprimirLista()+"\"];\n";
+            if(aux.texto.equals("\\n")){
+                dot += aux.noNodo+"[label=\"N\n\\\\n\nP: "+aux.primeros.imprimirLista()+"\nU: "+aux.ultimos.imprimirLista()+"\"];\n";
+            }
+            else if(aux.texto.equals("\\\"") || aux.texto.equals("\\\'")){
+                dot += aux.noNodo+"[label=\"N\n\\\\"+aux.texto+"\nP: "+aux.primeros.imprimirLista()+"\nU: "+aux.ultimos.imprimirLista()+"\"];\n";
+            }
+            else{
+                dot += aux.noNodo+"[label=\"N\n"+aux.texto+"\nP: "+aux.primeros.imprimirLista()+"\nU: "+aux.ultimos.imprimirLista()+"\"];\n";
+            }
         }
         if(!aux.hoja){
             if (aux.anulable){
