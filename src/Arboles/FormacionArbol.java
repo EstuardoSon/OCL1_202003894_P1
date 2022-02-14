@@ -171,7 +171,6 @@ public class FormacionArbol {
         
         if (".".equals(nodo.texto) && !nodo.hoja){
             nodo.primeros.insertarLista(nodo.izquierda.primeros);
-            nodo.ultimos.insertarLista(nodo.derecha.ultimos);
 
             if (nodo.izquierda.anulable == true && nodo.derecha.anulable == true){                    
                 nodo.anulable = true;
@@ -182,6 +181,7 @@ public class FormacionArbol {
             if (nodo.derecha.anulable){
                 nodo.ultimos.insertarLista(nodo.izquierda.ultimos); 
             }
+            nodo.ultimos.insertarLista(nodo.derecha.ultimos);
 
             NodoPU aux = nodo.izquierda.ultimos.primero;
             while(aux != null){

@@ -61,7 +61,7 @@ public class ListaSiguientes {
         NodoSiguientes aux = this.primero;
         
         while(aux!=null){
-            if(aux.nodo == nodo){
+            if(aux.nodo.equals(nodo)){
                 return aux;
             }
             

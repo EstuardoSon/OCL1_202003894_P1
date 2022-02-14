@@ -3,7 +3,7 @@ package Arboles;
 
 public class CambioNotacion {
     
-    public ListaCabecera columTransicion = new ListaCabecera();
+    public TablaTransicion tablaTransicion;
     
     public CambioNotacion(String texto, String nombre){
         int largo = texto.length();
@@ -132,16 +132,13 @@ public class CambioNotacion {
         pila.crearArchivo();
         pila.tablaSiguientes.imprimir();
         
-        /*
-        NodoSiguientes terminales = pila.tablaSiguientes.primero;
-        
-        while(terminales != null){
-            this.columTransicion.insertar(terminales.lexema);
-            terminales = terminales.siguiente;
-        }
-        
+        this.tablaTransicion = new TablaTransicion(pila.tablaSiguientes);
+        this.tablaTransicion.ingresarColumnas(pila.tablaSiguientes.primero);
         System.out.println("\n\nTerminales");
-        this.columTransicion.imprimir();
-        */
+        this.tablaTransicion.columTransicion.imprimir();
+        this.tablaTransicion.ingresarFila(pila.raiz.primeros.imprimirLista());
+        System.out.println("\n\nEstados");
+        this.tablaTransicion.llenarTabla();
+        this.tablaTransicion.imprimirFilas();
     }
 }
