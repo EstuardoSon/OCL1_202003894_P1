@@ -30,6 +30,7 @@ public class Ventana extends JFrame{
     private JPanel panel = new JPanel();
     private JTextArea entrada = new JTextArea();
     private JTextArea salida = new JTextArea();
+    private JLabel imagen = new JLabel();
     private String nombreArchivo = "", direccionArchivo = "";
         
     public Ventana(){
@@ -44,6 +45,7 @@ public class Ventana extends JFrame{
         this.crearLabels();
         this.configurarTextArea();
         this.crearBotones();
+        this.visualizadorImagenes();
         
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.getContentPane().add(this.panel);
@@ -215,6 +217,15 @@ public class Ventana extends JFrame{
         this.panel.add(scroll2);
     }
     
+    private void visualizadorImagenes(){
+        this.imagen.setBounds(0, 0, 340, 220);
+        JScrollPane scroll = new JScrollPane(this.imagen);
+        scroll.setBounds(405, 110, 340, 220);
+        scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        
+        this.panel.add(scroll);
+    }
+    
     private void crearBotones(){
         JButton automata = new JButton("Crear Automatas");
         automata.setBounds(40, 350, 150, 20);
@@ -286,6 +297,26 @@ public class Ventana extends JFrame{
                 }
             }
         });
+        
+        JButton verImagen = new JButton("Visualizar Imagen");
+        verImagen.setBounds(500, 350, 150, 20);
+        this.panel.add(verImagen);
+        
+        verImagen.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String rutaActual = System.getProperty("user.dir");
+                JFileChooser abrirArchivo = new JFileChooser(rutaActual+"/Reportes_202003894");
+                FileFilter filtro = new FileNameExtensionFilter("Archivos PNG (.png)", "PNG"); 
+                abrirArchivo.setFileFilter(filtro);
+                int seleccion = abrirArchivo.showOpenDialog(abrirArchivo);
+                
+                if (seleccion == JFileChooser.APPROVE_OPTION) {
+                    String ruta = abrirArchivo.getSelectedFile().getAbsolutePath();
+                    imagen.setIcon(new ImageIcon(ruta));
+                }
+            }
+        });
     }
     
     private void generarDirectorios(){
@@ -304,8 +335,8 @@ public class Ventana extends JFrame{
                 }
 
                 File afnd = new File(directorioActual+"/Reportes_202003894/AFND_202003894");
-                if (!arboles.exists()) {
-                    if (arboles.mkdirs()) {
+                if (!afnd.exists()) {
+                    if (afnd.mkdirs()) {
                         System.out.println("Directorio creado");
                     } else {
                         System.out.println("Error al crear directorio");
@@ -313,8 +344,8 @@ public class Ventana extends JFrame{
                 }
 
                 File afd = new File(directorioActual+"/Reportes_202003894/AFD_202003894");
-                if (!arboles.exists()) {
-                    if (arboles.mkdirs()) {
+                if (!afd.exists()) {
+                    if (afd.mkdirs()) {
                         System.out.println("Directorio creado");
                     } else {
                         System.out.println("Error al crear directorio");

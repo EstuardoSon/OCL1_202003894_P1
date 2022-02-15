@@ -70,7 +70,7 @@ public class ListaSiguientes {
         return null;
     }
     
-    public void imprimir(){
+    public void generarHTML(){
         NodoSiguientes aux = this.primero;
         String rutaActual = System.getProperty("user.dir");
         
@@ -78,7 +78,6 @@ public class ListaSiguientes {
         
         while(aux != null){
             html += "</tr>\n<td>"+aux.lexema+"</td>\n<td>"+aux.nodo+"</td>\n<td>"+aux.listSiguientes+"</td>\n<tr>\n";
-            System.out.println(aux.lexema+" "+aux.nodo+" "+aux.listSiguientes);
             aux = aux.siguiente;
         }
         html += "</table>";

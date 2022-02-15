@@ -65,7 +65,6 @@ public class FormacionArbol {
         this.recorrerArbol(this.raiz);
         
         this.dot += "}\n";
-        System.out.println(this.dot);
         return this.dot;
     }
     

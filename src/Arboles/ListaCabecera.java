@@ -6,6 +6,7 @@ public class ListaCabecera {
     public NodoCabecera primero;
     public NodoCabecera ultimo;
     public int contadorTerminal = 1;
+    public int contadorEstado = 0;
     
     public ListaCabecera(){
         this.primero = null;
@@ -43,13 +44,13 @@ public class ListaCabecera {
         return null;
     }
     
-    public void insertarFila(String lexema, int noEstado){
-        NodoCabecera aux = this.buscar(lexema);
+    public String insertarFila(String lexema){
+        NodoCabecera aux = this.buscarFila(lexema);
         if (aux!=null){
-            return;
+            return aux.nombre;
         }
         else{
-            NodoCabecera nuevo = new NodoCabecera(lexema, "S"+String.valueOf(noEstado), (noEstado+1));
+            NodoCabecera nuevo = new NodoCabecera(lexema, "S"+String.valueOf(this.contadorEstado), (this.contadorEstado+1));
             if (primero != null){
                 this.ultimo.abajo = nuevo;
                 this.ultimo = nuevo;
@@ -57,6 +58,8 @@ public class ListaCabecera {
             else{
                 this.primero = this.ultimo = nuevo;
             }
+            this.contadorEstado++;
+            return nuevo.nombre;
         }
     }
     

@@ -130,15 +130,15 @@ public class CambioNotacion {
         pila.tablaSiguientes.insertar("#", String.valueOf(pila.contadorHojas-1), "-");
         
         pila.crearArchivo();
-        pila.tablaSiguientes.imprimir();
+        pila.tablaSiguientes.generarHTML();
         
-        this.tablaTransicion = new TablaTransicion(pila.tablaSiguientes);
+        this.tablaTransicion = new TablaTransicion(pila.tablaSiguientes, nombre);
         this.tablaTransicion.ingresarColumnas(pila.tablaSiguientes.primero);
-        System.out.println("\n\nTerminales");
-        this.tablaTransicion.columTransicion.imprimir();
+
         this.tablaTransicion.ingresarFila(pila.raiz.primeros.imprimirLista());
-        System.out.println("\n\nEstados");
         this.tablaTransicion.llenarTabla();
-        this.tablaTransicion.imprimirFilas();
+        
+        this.tablaTransicion.htmlTabla();
+        this.tablaTransicion.crearArchivo();
     }
 }

@@ -7,6 +7,7 @@ public class NodoCabecera {
     public String lexema;
     public int numero;
     public ListaEstado listaTransicion;
+    public boolean estadoFinal = false;
     public NodoCabecera siguiente;
     public NodoCabecera abajo;
     
