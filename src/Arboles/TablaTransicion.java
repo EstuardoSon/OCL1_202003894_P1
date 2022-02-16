@@ -1,9 +1,12 @@
 package Arboles;
 
+import static ocl1_proyecto1.OCL1_Proyecto1.ListaConjuntos;
 import gui.ava.html.image.generator.HtmlImageGenerator;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -170,5 +173,110 @@ public class TablaTransicion {
                 e.printStackTrace();
             }
         }
+    }
+    
+    public boolean recorrer(String frase){
+        NodoCabecera estadoInicial = this.filaTransicion.primero;
+        boolean verificacion = false;
+        
+        int i;
+        for (i = 0; i < frase.length(); i ++){
+            System.out.println(estadoInicial.nombre);
+            String caracter = String.valueOf(frase.charAt(i));
+            boolean cambio = false;
+            
+            if (caracter.equals("\\")){
+                caracter += String.valueOf(frase.charAt(i + 1));
+                i++;
+            }
+            
+            NodoContenido estadoSiguiente = estadoInicial.listaTransicion.primero;
+            while (estadoSiguiente != null){
+                if (caracter.equals(estadoSiguiente.terminal)){
+                    NodoCabecera busqueda = this.filaTransicion.buscarFila(estadoSiguiente.lista.imprimirLista());
+                    estadoInicial = busqueda;
+                    cambio = true;
+                    break;
+
+                }else{
+                    String contenidoConjunto="";
+                    for (int j = 0; j < ListaConjuntos.size(); j ++){
+                        List verConjunto = (ArrayList) ListaConjuntos.get(j);
+                        String nombreConjunto = String.valueOf(verConjunto.get(0));
+                        
+                        if(nombreConjunto.equals(estadoSiguiente.terminal)){
+                            contenidoConjunto = String.valueOf(verConjunto.get(1));
+                            break;
+                        }
+                    }
+                    
+                    String [] conjSeparado = contenidoConjunto.split("~");
+                    
+                    if(conjSeparado.length == 2 && contenidoConjunto.length()==3){
+                        int limInferior = (int)conjSeparado[0].charAt(0);
+                        int limSuperior = (int)conjSeparado[1].charAt(0);
+                        int asciiCaracter = (int)caracter.charAt(0);
+                        
+                        if(limInferior >= 97 && limInferior <= 122){
+                            if( limInferior <= asciiCaracter &&  limSuperior >= asciiCaracter || 164== asciiCaracter){
+                                NodoCabecera busqueda = this.filaTransicion.buscarFila(estadoSiguiente.lista.imprimirLista());
+                                estadoInicial = busqueda;
+                                cambio = true;
+                                break;
+                            }
+                        }
+                        else if(limInferior >= 65 && limInferior <= 90){
+                            if( limInferior <= asciiCaracter &&  limSuperior >= asciiCaracter || 165== asciiCaracter){
+                                NodoCabecera busqueda = this.filaTransicion.buscarFila(estadoSiguiente.lista.imprimirLista());
+                                estadoInicial = busqueda;
+                                cambio = true;
+                                break;
+                            }
+                        }
+                        else if(limInferior >= 48 && limInferior <= 57){
+                            if( limInferior <= asciiCaracter &&  limSuperior >= asciiCaracter){
+                                NodoCabecera busqueda = this.filaTransicion.buscarFila(estadoSiguiente.lista.imprimirLista());
+                                estadoInicial = busqueda;
+                                cambio = true;
+                                break;
+                            }
+                        }
+                        else if(((limInferior >= 32 && limInferior <= 64) || (limInferior >= 91 && limInferior <= 96) || (limInferior >= 123 && limInferior <= 125)) &&
+                                ((limSuperior >= 32 && limSuperior <= 64) || (limSuperior >= 91 && limSuperior <= 96) || (limSuperior >= 123 && limSuperior <= 125))){
+                            if( !(asciiCaracter >= 97 && asciiCaracter <= 122) && !(asciiCaracter >= 65 && asciiCaracter <= 90) && !(asciiCaracter >= 48 && asciiCaracter <= 57) && (asciiCaracter >= limInferior && asciiCaracter <= limSuperior) ){
+                                NodoCabecera busqueda = this.filaTransicion.buscarFila(estadoSiguiente.lista.imprimirLista());
+                                estadoInicial = busqueda;
+                                cambio = true;
+                                break;
+                            }
+                        }
+                    }
+                    else{
+                       String [] valoresConjunto = contenidoConjunto.split(",");
+                       
+                       for(int j = 0; j < valoresConjunto.length; j++){
+                           if(caracter.equals(valoresConjunto[j])){
+                                NodoCabecera busqueda = this.filaTransicion.buscarFila(estadoSiguiente.lista.imprimirLista());
+                                estadoInicial = busqueda;
+                                cambio = true;
+                                break;
+                           }
+                       }
+                    }
+                }
+                
+                estadoSiguiente = estadoSiguiente.siguiente;
+            }
+            
+            if (!cambio){
+                break;
+            }
+        }
+        
+        if (estadoInicial.estadoFinal && i == (frase.length())){
+            verificacion = true;
+        }
+        
+        return verificacion;
     }
 }

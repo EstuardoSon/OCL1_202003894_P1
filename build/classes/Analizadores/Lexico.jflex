@@ -56,7 +56,7 @@ SALTO = [\ \n]
 <YYINITIAL> \<\! { yybegin(COMULTI);}
 <YYINITIAL> {ESPACIO} { }
 <YYINITIAL> {SALTO} { }
-<YYINITIAL> . {ListaErrores.add(new ArrayList(){{add("Caracter: "+yytext()+" No pertence al lenguaje");add(yyline+1);add(yycolumn+1);}});}
+<YYINITIAL> . {ListaErrores.add(new ArrayList(){{add("Lexico"); add("Caracter: "+yytext()+" No pertence al lenguaje");add(yyline+1);add(yycolumn+1);}});}
 
 <LEX>{
     \\\" { cadena+=yytext();}

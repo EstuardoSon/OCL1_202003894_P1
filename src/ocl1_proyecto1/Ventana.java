@@ -31,6 +31,7 @@ public class Ventana extends JFrame{
     private JTextArea entrada = new JTextArea();
     private JTextArea salida = new JTextArea();
     private JLabel imagen = new JLabel();
+    private List arboles;
     private String nombreArchivo = "", direccionArchivo = "";
         
     public Ventana(){
@@ -167,6 +168,7 @@ public class Ventana extends JFrame{
                     direccionArchivo = abrirArchivo.getSelectedFile().getAbsolutePath();
                     
                     File file = new File(direccionArchivo);
+                    
                     try {
                         file.createNewFile();
                         FileWriter escritor = new FileWriter(file);
@@ -189,7 +191,7 @@ public class Ventana extends JFrame{
     
     private void crearLabels(){
         JLabel texto1 = new JLabel("Archivo de Entrada");
-        texto1.setBounds(40, 90, 200, 20);
+        texto1.setBounds(40, 80, 200, 20);
         texto1.setFont(new Font("Arial", 0,16));
         
         JLabel texto2 = new JLabel("Salida");
@@ -234,15 +236,57 @@ public class Ventana extends JFrame{
         automata.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
+                arboles = new ArrayList<>();
+                String error = "";
                 for(int i=0; i< ListaExpresiones.size(); i++){
                     List lista = (ArrayList) ListaExpresiones.get(i);
-                    CambioNotacion cambio = new CambioNotacion(((String) lista.get(1)),((String) lista.get(0)));
+                    try{
+                        CambioNotacion cambio = new CambioNotacion(((String) lista.get(1)),((String) lista.get(0)));
+                        arboles.add(new ArrayList<>(){{add(String.valueOf(lista.get(0))); add(cambio);}});
+                    }catch(Exception a){
+                        error += "La expresion regular "+String.valueOf(lista.get(0))+" posee un error\n";
+                    }
+                }
+                salida.setText(error);
+            }
+        });
+        
+        JButton analizarE = new JButton("Analizar Entradas");
+        analizarE.setBounds(230, 350, 150, 20);
+        this.panel.add(analizarE);
+        
+        analizarE.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                salida.setText("");
+                for (int i = 0; i < ListaVerificaciones.size(); i++){
+                    List verificacion = (List) ListaVerificaciones.get(i);
+                    String nombreArbol = String.valueOf(verificacion.get(0));
+                    String frase = String.valueOf(verificacion.get(1));
+                    
+                    CambioNotacion arbol = null;
+                    for (int j = 0; j < arboles.size(); j++){
+                        List datosArbol = (List) arboles.get(j);
+                        
+                        if (nombreArbol.equals(String.valueOf(datosArbol.get(0)))){
+                            arbol = (CambioNotacion) datosArbol.get(1);
+                            break;
+                        }
+                    }
+                    
+                    if (arbol != null){
+                        if  (arbol.tablaTransicion.recorrer(frase)){
+                            salida.append(frase+" si cumple con la expresión de "+ nombreArbol+"\n");
+                        }else{
+                            salida.append(frase+" no cumple con la expresión de "+ nombreArbol+"\n");
+                        }
+                    }
                 }
             }
         });
         
-        JButton analizar = new JButton("Analizar Entradas");
-        analizar.setBounds(230, 350, 150, 20);
+        JButton analizar = new JButton("Analizar Archivo");
+        analizar.setBounds(230, 80, 150, 20);
         this.panel.add(analizar);
         
         analizar.addActionListener(new ActionListener(){
@@ -259,12 +303,11 @@ public class Ventana extends JFrame{
                 try {
                     sintactico.parse();
                     
-                    /*
                     for(int i = 0; i< ListaConjuntos.size(); i++){
                         List atConjunto = (ArrayList) ListaConjuntos.get(i);
                         System.out.println(atConjunto.get(0)+" "+atConjunto.get(1));
                     }
-                    
+                    /*
                     for(int i = 0; i< ListaExpresiones.size(); i++){
                         List atConjunto = (ArrayList) ListaExpresiones.get(i);
                         System.out.println(atConjunto.get(0)+" "+atConjunto.get(1));
@@ -293,6 +336,7 @@ public class Ventana extends JFrame{
                     archivo.close();
                     
                 } catch (Exception ex) {
+                    salida.setText("Error en el archivo de entrada");
                     ex.printStackTrace();
                 }
             }
