@@ -296,7 +296,7 @@ public class Ventana extends JFrame{
                 try {
 
                     String rutaActual = System.getProperty("user.dir");
-                    FileWriter file = new FileWriter(rutaActual+"/Reportes_202003894/Salidas_202003894/Salidas.json");
+                    FileWriter file = new FileWriter(rutaActual+"/Reportes_202003894/Salidas_202003894/"+nombreArchivo+".json");
                     file.write(listaAceptados.toJSONString());
                     file.flush();
                     file.close();
