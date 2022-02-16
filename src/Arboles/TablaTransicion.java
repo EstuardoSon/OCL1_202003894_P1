@@ -181,7 +181,6 @@ public class TablaTransicion {
         
         int i;
         for (i = 0; i < frase.length(); i ++){
-            System.out.println(estadoInicial.nombre);
             String caracter = String.valueOf(frase.charAt(i));
             boolean cambio = false;
             

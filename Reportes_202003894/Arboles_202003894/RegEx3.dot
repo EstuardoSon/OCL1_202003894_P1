@@ -1,91 +1,56 @@
 digraph G{
-N9->N8
-N8->N5
-N5->N3
-N3->N1
+N6->N2
+N2->N1
 N1->1
 1[label="N
-c
+digito
 P: 1
 U: 1"];
 N1[label="N
++
+P: 1
+U: 1"];
+N2[label="N
 .
 P: 1
-U: 2,3"];
-N1->N2
-N2->2
+U: 1,2,3,4"];
+N2->N5
+N5->N3
+N3->2
 2[label="N
-o
+_
 P: 2
 U: 2"];
-N2[label="N
-|
-P: 2,3
-U: 2,3"];
-N2->3
-3[label="N
-e
-P: 3
-U: 3"];
 N3[label="N
 |
-P: 1,4
-U: 2,3,5"];
+P: 2,3,4
+U: 2,3,4"];
 N3->N4
+N4->3
+3[label="N
+letra
+P: 3
+U: 3"];
+N4[label="N
+|
+P: 3,4
+U: 3,4"];
 N4->4
 4[label="N
-d
+digito
 P: 4
 U: 4"];
-N4[label="N
-.
-P: 4
-U: 5"];
-N4->5
-5[label="N
-m
-P: 5
-U: 5"];
-N5[label="N
-|
-P: 1,4,6
-U: 2,3,5,7,8"];
-N5->N6
-N6->6
-6[label="N
-a
-P: 6
-U: 6"];
+N5[label="A
+*
+P: 2,3,4
+U: 2,3,4"];
 N6[label="N
 .
-P: 6
-U: 7,8"];
-N6->N7
-N7->7
-7[label="N
-n
-P: 7
-U: 7"];
-N7[label="N
-|
-P: 7,8
-U: 7,8"];
-N7->8
-8[label="N
-L
-P: 8
-U: 8"];
-N8[label="N
-+
-P: 1,4,6
-U: 2,3,5,7,8"];
-N9[label="N
-.
-P: 1,4,6
-U: 9"];
-N9->9
-9[label="N
+P: 1
+U: 5"];
+N6->5
+5[label="N
 #
-P: 9
-U: 9"];
+P: 5
+U: 5"];
 }

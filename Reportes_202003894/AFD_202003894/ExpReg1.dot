@@ -5,6 +5,6 @@ S0[label="S0"shape=circle];
 S0 -> S1[label="letra"]
 S1[label="S1"shape=doublecircle];
 S1 -> S1[label="letra"]
-S1 -> S1[label="\\\""];
+S1 -> S1[label="_"]
 S1 -> S1[label="digito"]
 }

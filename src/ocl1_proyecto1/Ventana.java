@@ -23,6 +23,8 @@ import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 
 public class Ventana extends JFrame{
@@ -259,6 +261,8 @@ public class Ventana extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 salida.setText("");
+                JSONArray listaAceptados = new JSONArray();
+                
                 for (int i = 0; i < ListaVerificaciones.size(); i++){
                     List verificacion = (List) ListaVerificaciones.get(i);
                     String nombreArbol = String.valueOf(verificacion.get(0));
@@ -277,10 +281,29 @@ public class Ventana extends JFrame{
                     if (arbol != null){
                         if  (arbol.tablaTransicion.recorrer(frase)){
                             salida.append(frase+" si cumple con la expresión de "+ nombreArbol+"\n");
+                            JSONObject obj = new JSONObject();
+                            obj.put("Valor", frase);
+                            obj.put("ExpresionRegular", nombreArbol);
+                            obj.put("Resultado", "Cadena Válida");
+                            
+                            listaAceptados.add(obj);
                         }else{
                             salida.append(frase+" no cumple con la expresión de "+ nombreArbol+"\n");
                         }
                     }
+                }
+                
+                try {
+
+                    String rutaActual = System.getProperty("user.dir");
+                    FileWriter file = new FileWriter(rutaActual+"/Reportes_202003894/Salidas_202003894/Salidas.json");
+                    file.write(listaAceptados.toJSONString());
+                    file.flush();
+                    file.close();
+
+                } catch (IOException d) {
+                    d.printStackTrace();
+
                 }
             }
         });
@@ -302,23 +325,6 @@ public class Ventana extends JFrame{
                 parser sintactico = new parser(lexico);
                 try {
                     sintactico.parse();
-                    
-                    for(int i = 0; i< ListaConjuntos.size(); i++){
-                        List atConjunto = (ArrayList) ListaConjuntos.get(i);
-                        System.out.println(atConjunto.get(0)+" "+atConjunto.get(1));
-                    }
-                    /*
-                    for(int i = 0; i< ListaExpresiones.size(); i++){
-                        List atConjunto = (ArrayList) ListaExpresiones.get(i);
-                        System.out.println(atConjunto.get(0)+" "+atConjunto.get(1));
-                    }
-                    
-                    for(int i = 0; i< ListaVerificaciones.size(); i++){
-                        List atConjunto = (ArrayList) ListaVerificaciones.get(i);
-                        System.out.println(atConjunto.get(0)+" "+atConjunto.get(1));
-                    }
-                    
-                    */
 
                     FileWriter archivo = new FileWriter(directorioActual+"/Reportes_202003894/Errores_202003894/"+nombreArchivo+".html"); 
                     archivo.write("<!DOCTYPE html>\n<head>\n<title>Errores</title>\n</head>\n<body>\n<table border='2'>\n<tr>\n<th>#</th>\n<th>Tipo de Error</th>\n<th>Descripcion</th>"
