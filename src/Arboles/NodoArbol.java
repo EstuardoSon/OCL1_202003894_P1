@@ -3,7 +3,7 @@ package Arboles;
 public class NodoArbol {
     
     public NodoArbol izquierda, derecha;
-    public boolean anulable, hoja;
+    public boolean anulable, hoja, estadoFinal = false;
     public int noNodo;
     public String texto;
     public ListaPU ultimos;

@@ -1,0 +1,46 @@
+digraph G{
+N5->N4
+N4->N3
+N3->N1
+N1->1
+1[label="N
+vocales
+P: 1
+U: 1"];
+N1[label="N
+.
+P: 1
+U: 1,2"];
+N1->N2
+N2->2
+2[label="N
+especial
+P: 2
+U: 2"];
+N2[label="A
+?
+P: 2
+U: 2"];
+N3[label="N
+.
+P: 1
+U: 3"];
+N3->3
+3[label="N
+\\n
+P: 3
+U: 3"];
+N4[label="N
++
+P: 1
+U: 3"];
+N5[label="N
+.
+P: 1
+U: 4"];
+N5->4
+4[label="N
+#
+P: 4
+U: 4"];
+}

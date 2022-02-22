@@ -175,6 +175,8 @@ public class Ventana extends JFrame{
                         file.createNewFile();
                         FileWriter escritor = new FileWriter(file);
                         escritor.write(entrada.getText());
+                        escritor.flush();
+                        escritor.close();
                         
                     } catch (IOException ex) {
                         Logger.getLogger(Ventana.class.getName()).log(Level.SEVERE, null, ex);

@@ -62,8 +62,8 @@ SALTO = [\ \n]
     \\\" { cadena+=yytext();}
     \\n { cadena+=yytext();}
     \\\' { cadena+=yytext();}
-    \" { String tmp=cadena; cadena=""; yybegin(YYINITIAL); return new Symbol(sym.FRASE, yychar, yyline, tmp);}
-    [\n] { String tmp=cadena; cadena=""; ListaErrores.add(new ArrayList(){{add("Lexico"); add("Cadena: "+tmp+" se esperaba una \"");add(yyline+1);add(yychar+1);}}); yybegin (YYINITIAL);}
+    \" { String tmp=cadena; cadena=""; yybegin(YYINITIAL); return new Symbol(sym.FRASE, yyline, yycolumn, tmp);}
+    [\n] { String tmp=cadena; cadena=""; ListaErrores.add(new ArrayList(){{add("Lexico"); add("Cadena: "+tmp+" se esperaba una \"");add(yyline+1);add(yycolumn+1);}}); yybegin (YYINITIAL);}
     [^\"] { cadena+=yytext(); }
 }
 

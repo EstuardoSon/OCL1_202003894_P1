@@ -5,23 +5,24 @@ import static ocl1_proyecto1.OCL1_Proyecto1.ListaErrores;
 import static ocl1_proyecto1.OCL1_Proyecto1.ListaConjuntos;
 import static ocl1_proyecto1.OCL1_Proyecto1.ListaVerificaciones;
 import static ocl1_proyecto1.OCL1_Proyecto1.ListaExpresiones;
-import java_cup.runtime.Symbol;
+import java_cup.runtime.*;
 import java.util.ArrayList;
+
+parser code
+{:
+    String esperado = "";
+
+    public void syntax_error(Symbol s){
+       ListaErrores.add(new ArrayList(){{add("Sintactico"); add("Error Recuperable con el token "+s.value+" , se esperaba un token de tipo "+esperado+"");add(s.left+1);add(s.right+1);}});
+    }
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception{
+       ListaErrores.add(new ArrayList(){{add("Sintactico") ;add("Error NO Recuperable con el token "+s.value+" , se esperaba un token de tipo "+esperado+"");add(s.left+1);add(s.right+1);}});
+    }
+:}
 
 action code
 {:
     String instruccion="", segVerificar="";
-:}
-
-parser code
-{:
-
-    public void syntax_error(Symbol s){
-       ListaErrores.add(new ArrayList(){{add("Sintactico"); add("Error Recuperable "+s.value+" , se esperaba otro token");add(s.left+1);add(s.right+1);}});
-    }
-    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception{
-       ListaErrores.add(new ArrayList(){{add("Sintactico") ;add("Error NO Recuperable "+s.value+" , se esperaba otro token");add(s.left+1);add(s.right+1);}});
-    }
 :}
 
 terminal String IDENTIFICADOR,CONJUNTO,EXPRESION,FRASE,CONJ,SEPARADOR;
@@ -52,12 +53,12 @@ SEPARADORES::= SEPARADOR:sep SEPARADORES:seps
     :}
 ;
 
-CONJUNTOS::= CONJ:conj DOS_PTS IDENTIFICADOR:id ASIGNACION CONJUNTO:co PT_COMA
+CONJUNTOS::= CONJ:conj {: parser.esperado =":";:} DOS_PTS {: parser.esperado ="IDENTIFICADOR";:} IDENTIFICADOR:id {: parser.esperado ="ASIGNACION";:} ASIGNACION {: parser.esperado = "CONJUNTO";:} CONJUNTO:co {: parser.esperado = "PT_COMA";:} PT_COMA
     {:
         instruccion += conj+": "+id+" -> "+co+";\n";
         ListaConjuntos.add(new ArrayList(){{add(id);add(co);}});
     :}  
-    | CONJUNTOS:sigcon CONJ:conj DOS_PTS IDENTIFICADOR:id ASIGNACION CONJUNTO:co PT_COMA 
+    | CONJUNTOS:sigcon {: parser.esperado ="CONJ";:} CONJ:conj {: parser.esperado =":";:} DOS_PTS {: parser.esperado ="IDENTIFICADOR";:}  IDENTIFICADOR:id {: parser.esperado ="ASIGNACION";:} ASIGNACION {: parser.esperado = "CONJUNTO";:} CONJUNTO:co {: parser.esperado = "PT_COMA";:} PT_COMA
     {:
         instruccion += conj+": "+id+" -> "+co+";\n";
         ListaConjuntos.add(new ArrayList(){{add(id);add(co);}});
@@ -66,12 +67,12 @@ CONJUNTOS::= CONJ:conj DOS_PTS IDENTIFICADOR:id ASIGNACION CONJUNTO:co PT_COMA
 ;
 
 
-EXPRESIONES::= IDENTIFICADOR:id ASIGNACION EXPRESION:ex PT_COMA
+EXPRESIONES::= IDENTIFICADOR:id {: parser.esperado ="ASIGNACION";:} ASIGNACION {: parser.esperado ="EXPRESION";:} EXPRESION:ex {: parser.esperado ="PT_COMA";:} PT_COMA
     {:
         instruccion += id+" -> "+ex+";\n";
         ListaExpresiones.add(new ArrayList(){{add(id);add(ex);}});
     :} 
-    |EXPRESIONES:sigexp IDENTIFICADOR:id ASIGNACION EXPRESION:ex PT_COMA 
+    |EXPRESIONES:sigexp {: parser.esperado ="IDENTIFICADOR";:} IDENTIFICADOR:id {: parser.esperado ="ASIGNACION";:} ASIGNACION {: parser.esperado ="EXPRESION";:} EXPRESION:ex {: parser.esperado ="PT_COMA";:} PT_COMA 
     {:
         instruccion += id+" -> "+ex+";\n";
         ListaExpresiones.add(new ArrayList(){{add(id);add(ex);}});
@@ -81,12 +82,12 @@ EXPRESIONES::= IDENTIFICADOR:id ASIGNACION EXPRESION:ex PT_COMA
 ;
 
 
-VERIFICACIONES::= IDENTIFICADOR:id DOS_PTS FRASE:fra PT_COMA
+VERIFICACIONES::= {: parser.esperado ="IDENTIFICADOR";:} IDENTIFICADOR:id {: parser.esperado ="DOS_PTS";:} DOS_PTS {: parser.esperado ="FRASE";:} FRASE:fra {: parser.esperado ="PT_COMA";:} PT_COMA
     {:
         segVerificar += id+" : \""+fra+"\";\n";
         ListaVerificaciones.add(new ArrayList(){{add(id);add(fra);}});
     :}  
-    |VERIFICACIONES:sigver IDENTIFICADOR:id DOS_PTS FRASE:fra PT_COMA 
+    |VERIFICACIONES:sigver {: parser.esperado ="IDENTIFICADOR";:} IDENTIFICADOR:id {: parser.esperado ="DOS_PTS";:} DOS_PTS {: parser.esperado ="FRASE";:} FRASE:fra {: parser.esperado ="PT_COMA";:} PT_COMA 
     {:
         segVerificar += id+" : \""+fra+"\";\n";
         ListaVerificaciones.add(new ArrayList(){{add(id);add(fra);}});

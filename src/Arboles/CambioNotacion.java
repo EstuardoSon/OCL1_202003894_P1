@@ -123,6 +123,7 @@ public class CambioNotacion {
         NodoArbol nuevo = new NodoArbol(".", false);
         nuevo.izquierda = pila.extraer();
         nuevo.derecha = new NodoArbol("#");
+        nuevo.derecha.estadoFinal = true;
         pila.raiz = nuevo;
         
         pila.numerarNodos(pila.raiz);
