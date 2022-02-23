@@ -11,12 +11,12 @@ public class FormacionArbol {
     
     public Nodo primero, ultimo;
     public NodoArbol raiz = null;
-    public String dot ="";
+    public String dot ="", dotAFN ="";
     public String nombre = "";
-    public int contadorHojas = 1;
+    public int contadorHojas = 1, contadorAFN = 0;
     public int contadorNodos = 1;
-    public ListaSiguientes tablaSiguientes;
     
+    public ListaSiguientes tablaSiguientes;
     public FormacionArbol(String nombre){
         this.primero = null;
         this.ultimo = null;
@@ -245,5 +245,279 @@ public class FormacionArbol {
         if (nodo.derecha != null){
             this.imprimirArbol(nodo.derecha);
         }
+    }
+    
+    public void generarAFN(){
+        
+        this.dotAFN ="digraph G{\nrankdir = LR;\n" ;
+        this.dotAFN +="Inicio[style=invis];\n";
+        int arreglo [] = this.recorrerAFN(this.raiz.izquierda);
+        this.dotAFN += "Inicio->"+(arreglo[0])+" [label=\"Inicio\"];\n";
+        this.dotAFN += arreglo[1]+" [shape=doublecircle];\n";
+        this.dotAFN += "}";
+        
+        String dirActual = System.getProperty("user.dir");
+        
+        File filedot = new File(dirActual+"/Reportes_202003894/AFND_202003894/"+ this.nombre +".dot");
+        try {
+            filedot.createNewFile();
+        } catch (IOException ex) {
+            Logger.getLogger(FormacionArbol.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        finally{
+            try {
+                try (FileWriter escritor = new FileWriter(filedot)) {
+                    escritor.write(this.dotAFN);
+                }
+                
+                ProcessBuilder proceso = new ProcessBuilder("dot", "-Tpng","-o",dirActual+"/Reportes_202003894/AFND_202003894/"+ this.nombre +".png",dirActual+"/Reportes_202003894/AFND_202003894/"+ this.nombre +".dot");
+                proceso.redirectErrorStream(true);
+                proceso.start();
+                }  catch (IOException ex) {
+                    Logger.getLogger(FormacionArbol.class.getName()).log(Level.SEVERE, null, ex);
+                } 
+            catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+    }
+    
+    public int [] recorrerAFN(NodoArbol nodo){
+        
+        int [] datosIzquierda = new int [2];
+        int [] datosDerecha = new int [2];
+        if (nodo.izquierda != null && !nodo.izquierda.hoja){
+           datosIzquierda = recorrerAFN(nodo.izquierda);
+        }
+        
+        if (nodo.derecha != null && !nodo.derecha.hoja){
+           datosDerecha = recorrerAFN(nodo.derecha);
+        }
+        
+        int [] regreso = new int [2];
+        regreso[0]= this.contadorAFN;
+
+        
+        if (nodo.texto.equals(".") && nodo.izquierda.hoja && nodo.derecha.hoja){
+            
+            this.dotAFN += contadorAFN+"[shape=circle];\n";
+            this.dotAFN += (contadorAFN+1)+"[shape=circle];\n";
+            this.dotAFN += (contadorAFN+2)+"[shape=circle];\n";
+            
+            String izq = "", der = "";
+            if (nodo.izquierda.texto.equals("\\n")){ izq = "\\\\n"; }
+            else if(nodo.izquierda.texto.equals("\\\"")){ izq = "\\\\\""; }
+            else if(nodo.izquierda.texto.equals("\\\'")){ izq = "\\\\\'"; }
+            else{izq = nodo.izquierda.texto;}
+            if (nodo.derecha.texto.equals("\\n")){ der = "\\\\n"; }
+            else if(nodo.derecha.texto.equals("\\\"")){ der = "\\\\\""; }
+            else if(nodo.derecha.texto.equals("\\\'")){ der = "\\\\\'"; }
+            else{der = nodo.derecha.texto;}
+            
+            this.dotAFN += contadorAFN+"->"+(contadorAFN+1)+" [label=\""+izq+"\"];\n";
+            this.dotAFN += (contadorAFN+1)+"->"+(contadorAFN+2)+" [label=\""+der+"\"];\n";
+            regreso[1] = contadorAFN+2;
+            this.contadorAFN = contadorAFN+3;
+        }
+        
+        else if (nodo.texto.equals("+") && nodo.izquierda.hoja){
+            String izq = "";
+            if (nodo.izquierda.texto.equals("\\n")){ izq = "\\\\n"; }
+            else if(nodo.izquierda.texto.equals("\\\"")){ izq = "\\\\\""; }
+            else if(nodo.izquierda.texto.equals("\\\'")){ izq = "\\\\\'"; }
+            else{izq = nodo.izquierda.texto;}
+
+            this.dotAFN += contadorAFN+"[shape=circle];\n";
+            this.dotAFN +=(contadorAFN+1)+"[shape=circle];\n";
+            this.dotAFN +=(contadorAFN+2)+"[shape=circle];\n";
+            this.dotAFN +=(contadorAFN+3)+"[shape=circle];\n";
+            this.dotAFN +=contadorAFN+"->"+(contadorAFN+1)+" [label=\"Epsilon\"];\n";
+            this.dotAFN +=(contadorAFN+1)+"->"+(contadorAFN+2)+" [label=\""+izq+"\"];\n";
+            this.dotAFN +=(contadorAFN+2)+"->"+(contadorAFN+3)+" [label=\"Epsilon\"];\n";
+            this.dotAFN +=(contadorAFN+2)+"->"+(contadorAFN+1)+" [label=\"Epsilon\"];\n";
+            regreso[1] = contadorAFN+3;
+            this.contadorAFN = contadorAFN+4;
+        }
+        
+        else if (nodo.texto.equals("*") && nodo.izquierda.hoja){
+            String izq = "";
+            if (nodo.izquierda.texto.equals("\\n")){ izq = "\\\\n"; }
+            else if(nodo.izquierda.texto.equals("\\\"")){ izq = "\\\\\""; }
+            else if(nodo.izquierda.texto.equals("\\\'")){ izq = "\\\\\'"; }
+            else{izq = nodo.izquierda.texto;}
+            
+            this.dotAFN +=contadorAFN+"[shape=circle];\n";
+            this.dotAFN +=(contadorAFN+1)+"[shape=circle];\n";
+            this.dotAFN +=(contadorAFN+2)+"[shape=circle];\n";
+            this.dotAFN +=(contadorAFN+3)+"[shape=circle];\n";
+            this.dotAFN +=contadorAFN+"->"+(contadorAFN+1)+" [label=\"Epsilon\"];\n";
+            this.dotAFN +=contadorAFN+"->"+(contadorAFN+3)+" [label=\"Epsilon\"];\n";
+            this.dotAFN +=(contadorAFN+1)+"->"+(contadorAFN+2)+" [label=\""+izq+"\"];\n";
+            this.dotAFN +=(contadorAFN+2)+"->"+(contadorAFN+3)+" [label=\"Epsilon\"];\n";
+            this.dotAFN +=(contadorAFN+2)+"->"+(contadorAFN+1)+" [label=\"Epsilon\"];\n";
+            regreso[1] = contadorAFN+3;
+            this.contadorAFN = contadorAFN+4;
+        }
+        
+        else if (nodo.texto.equals("?") && nodo.izquierda.hoja){
+            String izq = "", der = "";
+            if (nodo.izquierda.texto.equals("\\n")){ izq = "\\\\n"; }
+            else if(nodo.izquierda.texto.equals("\\\"")){ izq = "\\\\\""; }
+            else if(nodo.izquierda.texto.equals("\\\'")){ izq = "\\\\\'"; }
+            else{izq = nodo.izquierda.texto;}
+            
+            this.dotAFN +=contadorAFN+"[shape=circle];\n";
+            this.dotAFN +=(contadorAFN+1)+"[shape=circle];\n";
+            this.dotAFN +=(contadorAFN+2)+"[shape=circle];\n";
+            this.dotAFN +=(contadorAFN+3)+"[shape=circle];\n";
+            this.dotAFN +=contadorAFN+"->"+(contadorAFN+1)+" [label=\"Epsilon\"];\n";
+            this.dotAFN +=contadorAFN+"->"+(contadorAFN+3)+" [label=\"Epsilon\"];\n";
+            this.dotAFN +=(contadorAFN+1)+"->"+(contadorAFN+2)+" [label=\""+izq+"\"];\n";
+            this.dotAFN +=(contadorAFN+2)+"->"+(contadorAFN+3)+" [label=\"Epsilon\"];\n";
+            regreso[1] = contadorAFN+3;
+            this.contadorAFN = contadorAFN+4;
+        }
+        
+        else if (nodo.texto.equals("|") && nodo.izquierda.hoja && nodo.derecha.hoja){
+            String izq = "", der = "";
+            if (nodo.izquierda.texto.equals("\\n")){ izq = "\\\\n"; }
+            else if(nodo.izquierda.texto.equals("\\\"")){ izq = "\\\\\""; }
+            else if(nodo.izquierda.texto.equals("\\\'")){ izq = "\\\\\'"; }
+            else{izq = nodo.izquierda.texto;}
+            if (nodo.derecha.texto.equals("\\n")){ der = "\\\\n"; }
+            else if(nodo.derecha.texto.equals("\\\"")){ der = "\\\\\""; }
+            else if(nodo.derecha.texto.equals("\\\'")){ der = "\\\\\'"; }
+            else{der = nodo.derecha.texto;}
+            
+            this.dotAFN +=contadorAFN+"[shape=circle];\n";
+            this.dotAFN +=(contadorAFN+1)+"[shape=circle];\n";
+            this.dotAFN +=(contadorAFN+2)+"[shape=circle];\n";
+            this.dotAFN +=(contadorAFN+3)+"[shape=circle];\n";
+            this.dotAFN +=(contadorAFN+4)+"[shape=circle];\n";
+            this.dotAFN +=(contadorAFN+5)+"[shape=circle];\n";
+            this.dotAFN +=contadorAFN+"->"+(contadorAFN+1)+" [label=\"Epsilon\"];\n";
+            this.dotAFN +=(contadorAFN+1)+"->"+(contadorAFN+2)+" [label=\""+izq+"\"];\n";
+            this.dotAFN +=contadorAFN+"->"+(contadorAFN+3)+" [label=\"Epsilon\"];\n";
+            this.dotAFN +=(contadorAFN+3)+"->"+(contadorAFN+4)+" [label=\""+der+"\"];\n";
+            this.dotAFN +=(contadorAFN+2)+"->"+(contadorAFN+5)+" [label=\"Epsilon\"];\n";
+            this.dotAFN +=(contadorAFN+4)+"->"+(contadorAFN+5)+" [label=\"Epsilon\"];\n";
+            regreso[1] = contadorAFN+5;
+            this.contadorAFN = contadorAFN+6;
+        }
+        
+        else if (nodo.texto.equals("|") && (nodo.izquierda.hoja || nodo.derecha.hoja)){
+            this.dotAFN +=contadorAFN+"[shape=circle];\n";
+            this.dotAFN +=(contadorAFN+1)+"[shape=circle];\n";
+            this.dotAFN +=(contadorAFN+2)+"[shape=circle];\n";
+            this.dotAFN +=(contadorAFN+3)+"[shape=circle];\n";
+            
+            if(nodo.izquierda.hoja){
+                String izq = "";
+                if (nodo.izquierda.texto.equals("\\n")){ izq = "\\\\n"; }
+                else if(nodo.izquierda.texto.equals("\\\"")){ izq = "\\\\\""; }
+                else if(nodo.izquierda.texto.equals("\\\'")){ izq = "\\\\\'"; }
+                else{izq = nodo.izquierda.texto;}
+                
+                this.dotAFN +=contadorAFN+"->"+(contadorAFN+1)+" [label=\"Epsilon\"];\n";
+                this.dotAFN +=(contadorAFN+1)+"->"+(contadorAFN+2)+" [label=\""+izq+"\"];\n";
+                this.dotAFN +=(contadorAFN+2)+"->"+(contadorAFN+3)+" [label=\"Epsilon\"];\n";
+                this.dotAFN +=contadorAFN+"->"+(datosDerecha[0])+" [label=\"Epsilon\"];\n";
+                this.dotAFN +=datosDerecha[1]+"->"+(contadorAFN+3)+" [label=\"Epsilon\"];\n";
+            }
+            else{
+                String der = "";
+                if (nodo.derecha.texto.equals("\\n")){ der = "\\\\n"; }
+                else if(nodo.derecha.texto.equals("\\\"")){ der = "\\\\\""; }
+                else if(nodo.derecha.texto.equals("\\\'")){ der = "\\\\\'"; }
+                else{der = nodo.derecha.texto;}
+                this.dotAFN +=contadorAFN+"->"+(contadorAFN+1)+" [label=\"Epsilon\"];\n";
+                this.dotAFN +=(contadorAFN+1)+"->"+(contadorAFN+2)+" [label=\""+nodo.derecha.texto+"\"];\n";
+                this.dotAFN +=(contadorAFN+2)+"->"+(contadorAFN+3)+" [label=\"Epsilon\"];\n";
+                this.dotAFN +=contadorAFN+"->"+(datosIzquierda[0])+" [label=\"Epsilon\"];\n";
+                this.dotAFN +=datosIzquierda[1]+"->"+(contadorAFN+3)+" [label=\"Epsilon\"];\n";
+            }
+            
+            regreso[1] = contadorAFN+3;
+            this.contadorAFN = contadorAFN+4;
+        }
+        
+        else if(nodo.texto.equals(".") && (nodo.izquierda.hoja || nodo.derecha.hoja)){
+            this.dotAFN +=contadorAFN+"[shape=circle];\n";
+            if (nodo.izquierda.hoja){
+                String izq = "";
+                if (nodo.izquierda.texto.equals("\\n")){ izq = "\\\\n"; }
+                else if(nodo.izquierda.texto.equals("\\\"")){ izq = "\\\\\""; }
+                else if(nodo.izquierda.texto.equals("\\\'")){ izq = "\\\\\'"; }
+                else{izq = nodo.izquierda.texto;}
+                
+                this.dotAFN +=contadorAFN+"->"+(datosDerecha[0])+" [label=\""+izq+"\"];\n";
+                regreso[0] = contadorAFN;
+                regreso[1] = datosDerecha[1];
+            }else{
+                String der = "";
+                if (nodo.derecha.texto.equals("\\n")){ der = "\\\\n"; }
+                else if(nodo.derecha.texto.equals("\\\"")){ der = "\\\\\""; }
+                else if(nodo.derecha.texto.equals("\\\'")){ der = "\\\\\'"; }
+                else{der = nodo.derecha.texto;}
+                
+                this.dotAFN +=(datosIzquierda[1])+"->"+(contadorAFN)+" [label=\""+der+"\"];\n";
+                regreso[0] = datosIzquierda[0];
+                regreso[1] =  contadorAFN;
+            }
+            this.contadorAFN = contadorAFN+1;
+        }
+        
+        else if (nodo.texto.equals("+")){
+            this.dotAFN +=contadorAFN+"[shape=circle];\n";
+            this.dotAFN +=(contadorAFN+1)+"[shape=circle];\n";
+            this.dotAFN +=contadorAFN+"->"+(datosIzquierda[0])+" [label=\"Epsilon\"];\n";
+            this.dotAFN +=(datosIzquierda[1])+"->"+(contadorAFN+1)+" [label=\"Epsilon\"];\n";
+             this.dotAFN +=datosIzquierda[1]+"->"+datosIzquierda[0]+" [label=\"Epsilon\"];\n";
+            regreso[1] = contadorAFN+1;
+            this.contadorAFN = contadorAFN+2;
+        }
+        
+        else if (nodo.texto.equals("*")){
+            this.dotAFN +=contadorAFN+"[shape=circle];\n";
+            this.dotAFN +=(contadorAFN+1)+"[shape=circle];\n";
+            this.dotAFN +=contadorAFN+"->"+(datosIzquierda[0])+" [label=\"Epsilon\"];\n";
+            this.dotAFN +=(datosIzquierda[1])+"->"+(contadorAFN+1)+" [label=\"Epsilon\"];\n";
+            this.dotAFN +=datosIzquierda[1]+"->"+datosIzquierda[0]+" [label=\"Epsilon\"];\n";
+            this.dotAFN +=(contadorAFN)+"->"+(contadorAFN+1)+" [label=\"Epsilon\"];\n";
+            regreso[1] = contadorAFN+1;
+            this.contadorAFN = contadorAFN+2;
+        }
+        
+        else if (nodo.texto.equals("?")){
+            this.dotAFN +=contadorAFN+"[shape=circle];\n";
+            this.dotAFN +=(contadorAFN+1)+"[shape=circle];\n";
+            this.dotAFN +=contadorAFN+"->"+(datosIzquierda[0])+" [label=\"Epsilon\"];\n";
+            this.dotAFN +=(datosIzquierda[1])+"->"+(contadorAFN+1)+" [label=\"Epsilon\"];\n";
+            this.dotAFN +=(contadorAFN)+"->"+(contadorAFN+1)+" [label=\"Epsilon\"];\n";
+            regreso[1] = contadorAFN+1;
+            this.contadorAFN = contadorAFN+2;
+        }
+        
+        else if (nodo.texto.equals("|")){
+            this.dotAFN +=contadorAFN+"[shape=circle];\n";
+            this.dotAFN +=(contadorAFN+1)+"[shape=circle];\n";
+            this.dotAFN +=contadorAFN+"->"+(datosIzquierda[0])+" [label=\"Epsilon\"];\n";
+            this.dotAFN +=contadorAFN+"->"+(datosDerecha[0])+" [label=\"Epsilon\"];\n";
+            this.dotAFN +=(datosIzquierda[1])+"->"+(contadorAFN+1)+" [label=\"Epsilon\"];\n";
+            this.dotAFN +=(datosDerecha[1])+"->"+(contadorAFN+1)+" [label=\"Epsilon\"];\n";
+            regreso[1] = contadorAFN+1;
+            this.contadorAFN = contadorAFN+2;
+        }
+        
+        else if(nodo.texto.equals(".")){
+            this.dotAFN = this.dotAFN.replaceAll("\n"+datosDerecha[0]+"-", "\n"+datosIzquierda[1]+"-");
+            this.dotAFN = this.dotAFN.replaceAll("\n"+datosDerecha[0]+"[^0-9-]", "\n"+datosIzquierda[1]+"[");
+            this.dotAFN = this.dotAFN.replaceAll(">"+datosDerecha[0]+" [^0-9-]", ">"+datosIzquierda[1]+" [");
+            regreso[0] = datosIzquierda[0];
+            regreso[1] = datosDerecha[1];
+            this.contadorAFN = contadorAFN+2;
+        }
+        
+        return regreso;
     }
 }

@@ -141,5 +141,7 @@ public class CambioNotacion {
         
         this.tablaTransicion.htmlTabla();
         this.tablaTransicion.crearArchivo();
+        
+        pila.generarAFN();
     }
 }

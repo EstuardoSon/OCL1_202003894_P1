@@ -248,6 +248,7 @@ public class Ventana extends JFrame{
                         CambioNotacion cambio = new CambioNotacion(((String) lista.get(1)),((String) lista.get(0)));
                         arboles.add(new ArrayList<>(){{add(String.valueOf(lista.get(0))); add(cambio);}});
                     }catch(Exception a){
+                        System.out.println(a.toString());
                         error += "La expresion regular "+String.valueOf(lista.get(0))+" posee un error\n";
                     }
                 }
