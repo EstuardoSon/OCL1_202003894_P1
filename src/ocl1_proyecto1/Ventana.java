@@ -241,18 +241,19 @@ public class Ventana extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 arboles = new ArrayList<>();
-                String error = "";
+                String textoSalida = "";
                 for(int i=0; i< ListaExpresiones.size(); i++){
                     List lista = (ArrayList) ListaExpresiones.get(i);
                     try{
                         CambioNotacion cambio = new CambioNotacion(((String) lista.get(1)),((String) lista.get(0)));
                         arboles.add(new ArrayList<>(){{add(String.valueOf(lista.get(0))); add(cambio);}});
+                        textoSalida += "Automatas creados correctamente con la expresion "+String.valueOf(lista.get(0))+"\n";
                     }catch(Exception a){
                         System.out.println(a.toString());
-                        error += "La expresion regular "+String.valueOf(lista.get(0))+" posee un error\n";
+                        textoSalida += "La expresion regular "+String.valueOf(lista.get(0))+" posee un error\n";
                     }
                 }
-                salida.setText(error);
+                salida.setText(textoSalida);
             }
         });
         
@@ -343,6 +344,7 @@ public class Ventana extends JFrame{
                     
                     archivo.write("</table>\n</body>");
                     archivo.close();
+                    salida.setText("Fin del analisis");
                     
                 } catch (Exception ex) {
                     salida.setText("Error en el archivo de entrada");

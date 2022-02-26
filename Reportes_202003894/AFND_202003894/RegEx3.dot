@@ -1,0 +1,35 @@
+digraph G{
+rankdir = LR;
+Inicio[style=invis];
+0[shape=circle];
+1[shape=circle];
+2[shape=circle];
+3[shape=circle];
+4[shape=circle];
+5[shape=circle];
+0->1 [label="Epsilon"];
+1->2 [label="letra"];
+0->3 [label="Epsilon"];
+3->4 [label="digito"];
+2->5 [label="Epsilon"];
+4->5 [label="Epsilon"];
+6[shape=circle];
+7[shape=circle];
+8[shape=circle];
+9[shape=circle];
+6->7 [label="Epsilon"];
+7->8 [label="_"];
+8->9 [label="Epsilon"];
+6->0 [label="Epsilon"];
+5->9 [label="Epsilon"];
+10[shape=circle];
+11[shape=circle];
+10->6 [label="Epsilon"];
+9->11 [label="Epsilon"];
+9->6 [label="Epsilon"];
+10->11 [label="Epsilon"];
+12[shape=circle];
+12->10 [label="digito"];
+Inicio->12 [label="Inicio"];
+11 [shape=doublecircle];
+}

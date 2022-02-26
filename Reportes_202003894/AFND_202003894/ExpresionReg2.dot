@@ -1,0 +1,18 @@
+digraph G{
+rankdir = LR;
+Inicio[style=invis];
+0[shape=circle];
+1[shape=circle];
+2[shape=circle];
+3[shape=circle];
+0->1 [label="Epsilon"];
+1->2 [label="digito"];
+2->3 [label="Epsilon"];
+2->1 [label="Epsilon"];
+4[shape=circle];
+4->0 [label="."];
+5[shape=circle];
+5->4 [label="digito"];
+Inicio->5 [label="Inicio"];
+3 [shape=doublecircle];
+}

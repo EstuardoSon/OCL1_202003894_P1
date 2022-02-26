@@ -1,15 +1,10 @@
 digraph G{
 rankdir = LR;
 inicio[style="invis"];inicio->S0 [label="inicio"];
-S0[label="S0"shape=doublecircle];
-S0 -> S0[label="1"]
-S0 -> S0[label="2"]
-S0 -> S0[label="3"]
-S0 -> S0[label="4"]
-S0 -> S0[label="5"]
-S0 -> S0[label="a"]
-S0 -> S0[label="e"]
-S0 -> S0[label="i"]
-S0 -> S0[label="o"]
-S0 -> S0[label="u"]
+S0[label="S0"shape=circle];
+S0 -> S1[label="letra"]
+S1[label="S1"shape=doublecircle];
+S1 -> S1[label="letra"]
+S1 -> S1[label="_"]
+S1 -> S1[label="digito"]
 }
