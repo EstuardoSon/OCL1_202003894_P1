@@ -204,17 +204,33 @@ public class TablaTransicion {
                         String nombreConjunto = String.valueOf(verConjunto.get(0));
                         
                         if(nombreConjunto.equals(estadoSiguiente.terminal)){
+                            System.out.println(estadoSiguiente.terminal);
                             contenidoConjunto = String.valueOf(verConjunto.get(1));
                             break;
                         }
                     }
                     
-                    String [] conjSeparado = contenidoConjunto.split("~");
+                    String [] conjSeparado = contenidoConjunto.strip().split("\\~");
                     
-                    if(conjSeparado.length == 2 && contenidoConjunto.length()==3){
-                        int limInferior = (int)conjSeparado[0].charAt(0);
-                        int limSuperior = (int)conjSeparado[1].charAt(0);
-                        int asciiCaracter = (int)caracter.charAt(0);
+                    if(conjSeparado.length == 2){
+                        int limInferior = (int)conjSeparado[0].strip().charAt(0);
+                        int limSuperior = (int)conjSeparado[1].strip().charAt(0);
+                        int asciiCaracter;
+                                
+                        switch(caracter){
+                            case "\\n":
+                                asciiCaracter = 10;
+                                break;
+                            case "\\\"":
+                                asciiCaracter = 34;
+                                break;
+                            case "\\\'":
+                                asciiCaracter = 39;
+                                break;
+                            default:
+                                asciiCaracter = (int)caracter.charAt(0);
+                                break;
+                        }
                         
                         if(limInferior >= 97 && limInferior <= 122){
                             if( limInferior <= asciiCaracter &&  limSuperior >= asciiCaracter || 164== asciiCaracter){
@@ -251,10 +267,20 @@ public class TablaTransicion {
                         }
                     }
                     else{
-                       String [] valoresConjunto = contenidoConjunto.split(",");
+                       String [] valoresConjunto = contenidoConjunto.split("\\,");
                        
                        for(int j = 0; j < valoresConjunto.length; j++){
-                           if(caracter.equals(valoresConjunto[j])){
+                           if(valoresConjunto[j].strip()=="\"\\\"\""){
+                               valoresConjunto[j] = "\\\"";
+                           }
+                           else if(valoresConjunto[j].strip()=="\"\\n\""){
+                               valoresConjunto[j] = "\\n";
+                           }
+                           else if(valoresConjunto[j].strip()=="\"\\\'\""){
+                               valoresConjunto[j] = "\\\'";
+                           }
+                                   
+                           if(caracter.equals(valoresConjunto[j].strip())){
                                 NodoCabecera busqueda = this.filaTransicion.buscarFila(estadoSiguiente.lista.imprimirLista());
                                 estadoInicial = busqueda;
                                 cambio = true;
