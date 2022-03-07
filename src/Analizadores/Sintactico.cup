@@ -5,6 +5,7 @@ import static ocl1_proyecto1.OCL1_Proyecto1.ListaErrores;
 import static ocl1_proyecto1.OCL1_Proyecto1.ListaConjuntos;
 import static ocl1_proyecto1.OCL1_Proyecto1.ListaVerificaciones;
 import static ocl1_proyecto1.OCL1_Proyecto1.ListaExpresiones;
+import static ocl1_proyecto1.OCL1_Proyecto1.salida;
 import java_cup.runtime.*;
 import java.util.ArrayList;
 
@@ -39,7 +40,8 @@ INICIO::= LLAVE_APERTURA CONJUNTOS EXPRESIONES SEPARADORES:sep VERIFICACIONES LL
         if(!sep.equals("%%")){
             System.out.println("Exceso de separadores");
         }
-        System.out.println("{\n"+instruccion+"%%\n"+segVerificar+"}");
+        System.out.println("{\n"+instruccion+"%%\n"+segVerificar+"}"); 
+        salida = "{\n"+instruccion+"%%\n"+segVerificar+"}";
     :}
 ;
 

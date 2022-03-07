@@ -5,6 +5,7 @@ import static ocl1_proyecto1.OCL1_Proyecto1.ListaConjuntos;
 import static ocl1_proyecto1.OCL1_Proyecto1.ListaExpresiones;
 import static ocl1_proyecto1.OCL1_Proyecto1.ListaVerificaciones;
 import static ocl1_proyecto1.OCL1_Proyecto1.ListaErrores;
+import static ocl1_proyecto1.OCL1_Proyecto1.salida;
 import java.awt.Color;
 import java.awt.Font;
 import java.util.List;
@@ -344,7 +345,7 @@ public class Ventana extends JFrame{
                     
                     archivo.write("</table>\n</body>");
                     archivo.close();
-                    salida.setText("Fin del analisis");
+                    salida.setText("RESULTADO DEL ANALISIS\n"+OCL1_Proyecto1.salida);
                     
                 } catch (Exception ex) {
                     salida.setText("Error en el archivo de entrada");
